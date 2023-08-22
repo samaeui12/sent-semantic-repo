@@ -63,7 +63,7 @@ if [[ -z ${CONTAINER_NAME} ]]; then
     CONTAINER_NAME='hwan'
 fi
 
-TODAY_CONTAINER_NAME=$CONTAINER_NAME"_"$DATE"_"$data
+TODAY_CONTAINER_NAME=$CONTAINER_NAME"_if_kill_war_begin"
 MEMORY='80g'
 
 echo "#######################"

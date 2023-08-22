@@ -12,5 +12,5 @@ nltk
 tqdm
 PyYAML>=3.09
 packaging
-jupyterlab==4.0.2
+jupyterlab
 matplotlib

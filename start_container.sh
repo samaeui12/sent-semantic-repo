@@ -44,7 +44,7 @@ do
 done
 
 if [[ -z ${IMAGE_NAME} ]]; then
-    IMAGE_NAME='semantic-embedding-library:test'
+    IMAGE_NAME='semantic-library_images:test'
 fi
 
 if [[ -z ${MODE} ]]; then
@@ -91,3 +91,16 @@ sudo docker run --gpus '"device='$GPU_NUMBER'"' \
 -p 40002:8888 \
 -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
 $IMAGE_NAME
+
+
+sudo docker run --gpus '"device='0'"' \
+-it --name hwan \
+--ip 0.0.0.0 \
+--memory='80g' \
+-p 40004:6006 \
+-p 40002:8888 \
+-v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
+'semantic-embedding-library:test'
+
+sudo docker run --gpus '"device='0'"' \
+-v /usr/local/cuda:/usr/local/cuda -it 039ce4830ee6

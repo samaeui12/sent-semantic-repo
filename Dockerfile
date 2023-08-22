@@ -1,5 +1,5 @@
 # Define a builder image
-FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
+FROM python:3.8-slim
 
 LABEL name="Hwan"
 LABEL version="1.0"

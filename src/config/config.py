@@ -1,5 +1,6 @@
 import argparse
 from utils import get_model_argparse
+from model import MODEL_MAPPING_DICT
 
 def parser():
     parser = argparse.ArgumentParser()

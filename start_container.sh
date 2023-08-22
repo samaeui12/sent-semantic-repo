@@ -89,7 +89,7 @@ if [[ $GPU_NUMBER == -1 ]]; then
     --memory=${MEMORY} \
     -p 40004:6006 \
     -p 40002:8888 \
-    -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
+    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code -v /usr/local/cuda:/usr/local/cuda \
     $IMAGE_NAME
 
 else
@@ -100,9 +100,9 @@ else
     --memory=${MEMORY} \
     -p 40004:6006 \
     -p 40002:8888 \
-    -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
+    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code -v /usr/local/cuda:/usr/local/cuda \
     $IMAGE_NAME
 fi
-
-#sudo docker run --gpus '"device='0'"' \
-#-v /usr/local/cuda:/usr/local/cuda -it 039ce4830ee6
+{
+    jupyter lab --no-browser --allow-root --ip=0.0.0.0 --port=8888
+}

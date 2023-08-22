@@ -1,5 +1,5 @@
 # Define a builder image
-FROM python:3.8-slim
+FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 
 LABEL name="Hwan"
 LABEL version="1.0"
@@ -43,8 +43,6 @@ RUN cd apex && \
 # otherwise
 
 # Install requirements txt 
-
-
 
 ## python package
 

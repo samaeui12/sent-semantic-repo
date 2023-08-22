@@ -11,6 +11,6 @@ numpy
 nltk
 tqdm
 PyYAML>=3.09
-packaging==23.1
+packaging
 jupyterlab==4.0.2
 matplotlib

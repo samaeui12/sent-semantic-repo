@@ -59,7 +59,7 @@ if [[ -z ${DATE} ]]; then
     DATE=$TODAY
 fi
 
-if [[ -z ${DATE} ]]; then
+if [[ -z ${CONTAINER_NAME} ]]; then
     CONTAINER_NAME='hwan'
 fi
 

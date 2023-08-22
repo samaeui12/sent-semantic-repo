@@ -102,5 +102,5 @@ sudo docker run --gpus '"device='0'"' \
 -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
 'semantic-embedding-library:test'
 
-sudo docker run --gpus '"device='0'"' \
--v /usr/local/cuda:/usr/local/cuda -it 039ce4830ee6
+#sudo docker run --gpus '"device='0'"' \
+#-v /usr/local/cuda:/usr/local/cuda -it 039ce4830ee6

@@ -38,9 +38,12 @@ RUN git clone https://github.com/NVIDIA/apex
 
 # Change the directory to apex and install using pip
 RUN cd apex && \
-    pip3 install --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+    pip install --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+
+# otherwise
 
 # Install requirements txt 
+
 
 
 ## python package

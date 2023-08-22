@@ -52,7 +52,7 @@ if [[ -z ${MODE} ]]; then
 fi
 
 if [[ -z ${GPU_NUMBER} ]]; then
-    GPU_NUMBER=1
+    GPU_NUMBER=-1
 fi
 
 if [[ -z ${DATE} ]]; then
@@ -81,16 +81,30 @@ echo "#######################"
     echo "CHECKED NO CONTAINER [$TODAY_CONTAINER_NAME] EXISTENCE"
 }
 
+if [[ $GPU_NUMBER == -1 ]]; then
+    sudo docker run --gpus all \
+    -it --name $TODAY_CONTAINER_NAME \
+    -e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \
+    --ip 0.0.0.0 \
+    --memory=${MEMORY} \
+    -p 40004:6006 \
+    -p 40002:8888 \
+    -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
+    $IMAGE_NAME
 
-sudo docker run --gpus '"device='$GPU_NUMBER'"' \
--it --name $TODAY_CONTAINER_NAME \
--e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \
---ip 0.0.0.0 \
---memory=${MEMORY} \
--p 40004:6006 \
--p 40002:8888 \
--v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
-$IMAGE_NAME
+
+else
+
+    sudo docker run --gpus '"device='$GPU_NUMBER'"' \
+    -it --name $TODAY_CONTAINER_NAME \
+    -e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \
+    --ip 0.0.0.0 \
+    --memory=${MEMORY} \
+    -p 40004:6006 \
+    -p 40002:8888 \
+    -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
+    $IMAGE_NAME
+fi
 
 
 sudo docker run --gpus '"device='0'"' \

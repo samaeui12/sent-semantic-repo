@@ -12,6 +12,6 @@ nltk
 tqdm
 sentence_transformers
 PyYAML>=3.09
-packaging
+packaging==23.1
 jupyterlab==4.0.2
 matplotlib

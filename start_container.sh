@@ -92,9 +92,7 @@ if [[ $GPU_NUMBER == -1 ]]; then
     -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
     $IMAGE_NAME
 
-
 else
-
     sudo docker run --gpus '"device='$GPU_NUMBER'"' \
     -it --name $TODAY_CONTAINER_NAME \
     -e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \
@@ -105,16 +103,6 @@ else
     -v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
     $IMAGE_NAME
 fi
-
-
-sudo docker run --gpus '"device='0'"' \
--it --name hwan \
---ip 0.0.0.0 \
---memory='80g' \
--p 40004:6006 \
--p 40002:8888 \
--v /app/data/air-cupid:/app/data -v /app/service/apollo-cupid-etl:/app/code -v /usr/local/cuda:/usr/local/cuda \
-'semantic-embedding-library:test'
 
 #sudo docker run --gpus '"device='0'"' \
 #-v /usr/local/cuda:/usr/local/cuda -it 039ce4830ee6

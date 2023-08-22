@@ -1,0 +1,45 @@
+# Distribution / packaging
+.Python
+develop-eggs/
+dist/
+downloads/
+wheels/
+eggs/
+.eggs/
+lib/
+lib64/
+sdist/
+var/
+*.egg-info/
+share/python-wheels/
+MANIFEST
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Unit test / coverage reports
+.pytest_cache/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+### macOS ###
+*.DS_Store
+.AppleDouble
+.LSOverride

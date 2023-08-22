@@ -16,8 +16,13 @@ ENV LANG C.UTF-8
 ENV http_proxy=http://172.18.171.132:3128
 ENV https_proxy=http://172.18.171.132:3128
 
+ENV WORK_DIR /app/
 ENV CODE_DIR /app/code
+
 ENV PYTHONPATH "${PYTHONPATH}:${CODE_DIR}"
+
+RUN mkdir -p $WORK_DIR
+RUN mkdir -p $CODE_DIR
 
 WORKDIR $CODE_DIR
 
@@ -26,8 +31,8 @@ RUN apt-get update && apt-get install -y \
     git \
     python3-pip
 
-COPY ./requirements.txt ${CODE_DIR}/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r ${CODE_DIR}/requirements.txt 
+COPY ./requirements.txt ${WORK_DIR}/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r ${WORK_DIR}/requirements.txt 
 
 RUN git clone https://github.com/NVIDIA/apex
 

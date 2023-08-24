@@ -1,5 +1,5 @@
 from .abs_preprocess import AbsPreprocessor
-from .preprocess import SimcsePreprocessor
+from .preprocess import NliPreprocessor
 from .preprocess import Stsprocessor
 from .preprocess import PreprocessorFactory
 from .util import set_seed, SummaryWriter, get_model_argparse

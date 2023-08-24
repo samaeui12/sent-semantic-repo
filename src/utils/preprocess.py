@@ -225,7 +225,7 @@ class DiffcsePreprocessor(AbsPreprocessor):
                 kwargs = dataclasses.asdict(tokenizer_input)
                 return tokenizer.encode_plus(input, **kwargs)
 
-class SimcsePreprocessor(AbsPreprocessor):
+class NliPreprocessor(AbsPreprocessor):
     """ file open -> tokenizing -> dataclasses"""
     @staticmethod
     def preprocess(data_path:str, save_path:str=None, header:bool=True) -> List:
@@ -450,7 +450,7 @@ class Stsprocessor(AbsPreprocessor):
 class PreprocessorFactory:
     def __new__(cls, data_type: str) -> AbsPreprocessor:
         if data_type.lower() == 'nli':
-            return SimcsePreprocessor
+            return NliPreprocessor
         elif data_type.lower() =='diffcse':
             return DiffcsePreprocessor
         elif data_type.lower() == 'sts':

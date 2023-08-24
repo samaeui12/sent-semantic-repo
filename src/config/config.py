@@ -2,20 +2,7 @@ import argparse
 from utils import get_model_argparse
 from model import MODEL_MAPPING_DICT
 
-# class Args(argparse.Namespace):
-#     train_file = '/app/data/open_data/preprocess/KorNLI'
-#     valid_file = '/app/data/open_data/preprocess/KorSTS'
-#     experiments_path ='experiments/experiment.csv'
-#     train_batch_size = 64
-#     eval_batch_size = 64
-#     gradient_accumulation_steps = 4
-#     model_max_len = 512
-#     learning_rate = 3e-5
-#     weight_decay = 0.01
-#     adam_epsilon = 1e-8
-    
-
-def parser_model_args():
+def nli_parser_model_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--train_file",

@@ -101,6 +101,16 @@ def nli_parser_model_args():
         help="must select model type in [{}]".format(", ".join(MODEL_MAPPING_DICT)),
     )
     parser.add_argument(
+        "--data_type",
+        default='nli',
+        type=str,
+    )
+    parser.add_argument(
+        "--loss",
+        default='MultipleNegativesRankingLoss',
+        type=str,
+    )
+    parser.add_argument(
         "--pretrained_model",
         default='klue/roberta-larg',
         type=str,

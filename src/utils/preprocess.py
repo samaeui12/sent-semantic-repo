@@ -448,15 +448,15 @@ class Stsprocessor(AbsPreprocessor):
 
 
 class PreprocessorFactory:
-    def __new__(cls, model_type: str) -> AbsPreprocessor:
-        if model_type.lower() == 'nli':
+    def __new__(cls, data_type: str) -> AbsPreprocessor:
+        if data_type.lower() == 'nli':
             return SimcsePreprocessor
-        elif model_type.lower() =='diffcse':
+        elif data_type.lower() =='diffcse':
             return DiffcsePreprocessor
-        elif model_type.lower() == 'sts':
+        elif data_type.lower() == 'sts':
             return Stsprocessor
         else:
-            raise ValueError(f"Invalid model type: {model_type}")
+            raise ValueError(f"Invalid model type: {data_type}")
 
 
 if __name__ == '__main__':

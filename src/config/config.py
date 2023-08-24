@@ -2,7 +2,7 @@ import argparse
 from utils import get_model_argparse
 from model import MODEL_MAPPING_DICT
 
-def parser():
+def parser_model_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--train_file",

@@ -4,6 +4,7 @@ from model import MODEL_MAPPING_DICT
 
 def nli_parser_model_args():
     parser = argparse.ArgumentParser()
+
     parser.add_argument(
         "--train_file",
         default='/app/data/open_data/preprocess/KorNLI',
@@ -26,8 +27,15 @@ def nli_parser_model_args():
         help="The output directory where the model predictions and checkpoints will be written.",
     )
     parser.add_argument(
+        "--metric",
+        default='spearman',
+        type=str,
+        help="The input training data file."
+    )
+
+    parser.add_argument(
         "--train_batch_size",
-        default=64,
+        default=256,
         type=int,
         help="Batch size for training.",
     )
@@ -58,7 +66,7 @@ def nli_parser_model_args():
     parser.add_argument("--max_grad_norm", default=1.0, type=float, help="Max gradient norm.")
     parser.add_argument(
         "--num_train_epochs",
-        default=3.0,
+        default=10,
         type=float,
         help="Total number of training epochs to perform.",
     )
@@ -70,7 +78,7 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--warmup_percent",
-        default=0.1,
+        default=0.01,
         type=float,
         help="Percentage of linear warmup over warmup_steps.",
     )
@@ -88,18 +96,25 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--model_type",
-        default='sent_bert',
+        default='sent_roberta',
         type=str,
         help="must select model type in [{}]".format(", ".join(MODEL_MAPPING_DICT)),
     )
     parser.add_argument(
         "--pretrained_model",
-        default=None,
+        default='klue/roberta-larg',
         type=str,
         help="If there is pretrained Model",
     )
     parser.add_argument("--no_cuda", action="store_true", help="Avoid using CUDA when available")
     parser.add_argument("--seed", type=int, default=42, help="random seed for initialization")
+
+    parser.add_argument(
+        "--amp_use",
+        default=False,
+        type=bool,
+        help="use amp or not "
+    )
     parser.add_argument(
         "--fp16",
         action="store_true",
@@ -116,7 +131,16 @@ def nli_parser_model_args():
         "--local_rank", type=int, default=-1, help="For distributed training: local_rank"
     )
     parser.add_argument(
-        "--temperature", type=float, default=0.05, help="For SimCSE temperature"
+        "--temperature", 
+        type=float, 
+        default=0.05, 
+        help="For SimCSE temperature"
+    )
+    parser.add_argument(
+        "--patience_limit", 
+        type=int, 
+        default=3, 
+        help="patience limit for early stopping"
     )
     parser = get_model_argparse(parser)
     args = parser.parse_args(args=[])

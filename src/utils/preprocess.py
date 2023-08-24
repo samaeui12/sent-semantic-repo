@@ -353,6 +353,12 @@ class Stsprocessor(AbsPreprocessor):
     """ file open -> tokenizing -> dataclasses"""
 
     @classmethod
+    def preprocess_pd(cls, data_path:Union[str, List], save_path:str=None, header:bool=True) -> List:
+        df = pd.read_csv(data_path, delimiter='\t')
+
+
+
+    @classmethod
     def preprocess(cls, data_path:Union[str, List], save_path:str=None, header:bool=True) -> List:
         if isinstance(data_path, str):
             data_path = [data_path]
@@ -443,7 +449,7 @@ class Stsprocessor(AbsPreprocessor):
 
 class PreprocessorFactory:
     def __new__(cls, model_type: str) -> AbsPreprocessor:
-        if model_type.lower() == 'simcse':
+        if model_type.lower() == 'nli':
             return SimcsePreprocessor
         elif model_type.lower() =='diffcse':
             return DiffcsePreprocessor

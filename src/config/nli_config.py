@@ -112,7 +112,7 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--pretrained_model",
-        default='klue/roberta-larg',
+        default='klue/roberta-large',
         type=str,
         help="If there is pretrained Model",
     )

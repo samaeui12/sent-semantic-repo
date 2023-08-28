@@ -147,7 +147,7 @@ class Stsprocessor(AbsPreprocessor):
                     line = row.strip().split('\t')
                     if len(line) < 3:
                         continue
-                    
+
                     label = float(line[-3])
                     a_sentence = line[-2]
                     b_sentence = line[-1]

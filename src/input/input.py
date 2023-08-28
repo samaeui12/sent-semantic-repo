@@ -14,7 +14,7 @@ class TokenizerInput:
 
 
 @dataclass
-class SimcseInput:
+class NLIInput:
     sentence_a: str = None
     sentence_b: str = None
     sentence_c: str = None
@@ -36,6 +36,3 @@ class StsInput:
     b_input_ids: List[int] = None
     b_attention_mask: List[int] = None
     label: float = None
-
-
-    

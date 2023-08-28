@@ -1,1 +1,1 @@
-from .input import SimcseInput, StsInput, TokenizerInput
+from .input import NLIInput, StsInput, TokenizerInput

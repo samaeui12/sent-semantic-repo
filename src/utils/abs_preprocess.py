@@ -16,8 +16,8 @@ class AbsPreprocessor(metaclass=ABCMeta):
             return tokenizer.encode_plus(input, **kwargs)
 
     @abstractmethod
-    def preprocess(self) -> pd.DataFrame:
-        """preprocessing raw data"""
+    def load_data(self) -> pd.DataFrame:
+        """reading raw data"""
     @abstractmethod
-    def build(self):
-        """ build model input object"""
+    def prerocess(self):
+        """ preprocess model input object"""

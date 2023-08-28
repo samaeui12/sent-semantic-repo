@@ -141,10 +141,13 @@ class Stsprocessor(AbsPreprocessor):
         for train_file in data_path:
             with open(train_file, 'r') as file:
                 for i, row in enumerate(file):
-                    if (len(line) < 3) or (i==0):
+                    if header and i==0:
+                        continue
+
+                    line = row.strip().split('\t')
+                    if len(line) < 3:
                         continue
                     
-                    line = row.strip().split('\t')
                     label = float(line[-3])
                     a_sentence = line[-2]
                     b_sentence = line[-1]
@@ -172,7 +175,6 @@ class Stsprocessor(AbsPreprocessor):
             if header and i==0:
                 continue
             
-
             """ Header:  genre  |  filename  |	year  |   id	|  score  |   sentence1   |   sentence2  """
             sentence_a = line[0]
             sentence_b = line[1]

@@ -173,7 +173,7 @@ class SimcseTrainer(AbstractTrainer):
             if param.requires_grad:
                 self.requires_grad_list.append(name)
         
-        if self.args.amp:
+        if self.args.amp_use:
             self.scaler = amp.GradScaler()
                
         for i in tqdm(range(self.args.num_train_epochs)):

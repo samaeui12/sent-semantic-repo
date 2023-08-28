@@ -27,7 +27,7 @@ class SimcseDataloader(AbstractDataloader):
         self.sep_token_id = tokenizer.sep_token_id if tokenizer.sep_token_id else tokenizer.eos_token_id
 
     def code(cls):
-        return 'nli'
+        return 'simcse'
 
     def _get_train_dataset(self):
         return SimcseDataset(args=self.args, features=self.features, max_length=self.max_length)

@@ -11,7 +11,8 @@ class SiameseDistanceMetric(Enum):
     """
     EUCLIDEAN = lambda x, y: F.pairwise_distance(x, y, p=2)
     MANHATTAN = lambda x, y: F.pairwise_distance(x, y, p=1)
-    COSINE_DISTANCE = lambda x, y: 1-F.cosine_similarity(x, y)
+    COSINE_SIM = lambda x, y: F.cosine_similarity(x, y)
+    #COSINE_DISTANCE = lambda x, y: 1-F.cosine_similarity(x, y)
 
 def cos_sim(a: Tensor, b: Tensor):
     """
@@ -40,14 +41,17 @@ class TripletLoss(nn.Module):
     Triplet loss
     Takes embeddings of an anchor sample, a positive sample and a negative sample
     """
-    def __init__(self, margin):
+    def __init__(self, margin, similarity_fct=SiameseDistanceMetric.COSINE_DISTANCE):
         super(TripletLoss, self).__init__()
         self.margin = margin
+        self.similarity_fct = similarity_fct
 
     def forward(self, anchor:Tensor, positive:Tensor, negative:Tensor, label=None):
 
-        distance_positive = (anchor - positive).pow(2).sum(1)  # .pow(.5)
-        distance_negative = (anchor - negative).pow(2).sum(1)  # .pow(.5)
+        distance_positive = 1 - self.similarity_fct(anchor, positive)
+        distance_negative = 1 - self.similarity_fct(anchor, negative)
+        #distance_positive = (anchor - positive).pow(2).sum(1)  # .pow(.5)
+        #distance_negative = (anchor - negative).pow(2).sum(1)  # .pow(.5)
         losses = F.relu(distance_positive - distance_negative + self.margin)
         return losses.mean() 
 
@@ -79,15 +83,15 @@ class OnlineContrastiveLoss(nn.Module):
         model.fit([(train_dataloader, train_loss)], show_progress_bar=True)
     """
 
-    def __init__(self, distance_metric=SiameseDistanceMetric.COSINE_DISTANCE, margin: float = 0.5):
+    def __init__(self, similarity_fct=SiameseDistanceMetric.COSINE_DISTANCE, margin: float = 0.5):
         super(OnlineContrastiveLoss, self).__init__()
         self.margin = margin
-        self.distance_metric = distance_metric
+        self.similarity_fct = similarity_fct
 
     def forward(self, anchor:Tensor, positive:Tensor, negative:Tensor, label=None):
         
-        poss = self.distance_metric(anchor, positive)
-        negs = self.distance_metric(anchor, negative)
+        poss = 1 - self.similarity_fct(anchor, positive)
+        negs = 1 - self.similarity_fct(anchor, negative)
 
         # select hard positive and hard negative pairs
         negative_pairs = negs[negs < (poss.max() if len(poss) > 1 else negs.mean())]
@@ -131,7 +135,7 @@ class MultipleNegativesRankingLoss(nn.Module):
             train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=32)
             train_loss = losses.MultipleNegativesRankingLoss(model=model)
     """
-    def __init__(self, temperature: float = 0.05, similarity_fct = cos_sim):
+    def __init__(self, temperature: float = 0.05, similarity_fct = SiameseDistanceMetric.COSINE_DISTANCE):
         """
         :param model: SentenceTransformer model
         :param scale: Output of similarity function is multiplied by scale value

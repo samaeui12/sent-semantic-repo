@@ -148,7 +148,7 @@ class SimcseTrainer(AbstractTrainer):
             self.optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps= total_step
         )   
         loss_fct = Loss_MAPPING_DICT[self.args.loss]
-        self.loss_fct = loss_fct(**self.args)
+        self.loss_fct = loss_fct(margin=self.args.margin, temperature=self.temperature)
         self.metrics = self.initialize_metrics(metrics=['spearman', 'pearson', 'train_loss', 'val_loss'])
         
     def cal_loss(self, batch):

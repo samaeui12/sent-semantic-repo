@@ -7,13 +7,13 @@ from .abs_dataloader import AbstractDataloader
 from dataset import SimcseDataset
 from typing import List, Dict, Any, Union
 import torch
-from src.input import SimcseInput, TokenizerInput
+from src.input import NLIInput, TokenizerInput
 
 class SimcseDataloader(AbstractDataloader):
     def __init__(
             self,
             args,
-            features:List[SimcseInput],
+            features:List[NLIInput],
             tokenizer_input: TokenizerInput,
             tokenizer,
             **kwargs

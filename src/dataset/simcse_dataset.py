@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from src.input import SimcseInput
+from src.input import NLIInput
 
 import torch
 from torch.utils.data import (
@@ -15,7 +15,7 @@ class SimcseDataset(Dataset):
     def __init__(
             self,
             args,
-            features:List[SimcseInput],
+            features:List[NLIInput],
             max_length,
             tokenizer,
             **kwargs

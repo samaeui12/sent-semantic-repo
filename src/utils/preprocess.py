@@ -13,7 +13,7 @@ import pandas as pd
 import csv
 from common import YamlParser
 from io import StringIO
-from input import SimcseInput, TokenizerInput, StsInput
+from input import NLIInput, TokenizerInput, StsInput
 import dataclasses
 from itertools import product
 
@@ -104,7 +104,7 @@ class NliPreprocessor(AbsPreprocessor):
                 c_encoded_sentence = cls.tokenizing(input=c_sentence, tokenizer=tokenizer, tokenizer_input=tokenizer_input)
 
                 feature_list.append(
-                    SimcseInput(
+                    NLIInput(
                         sentence_a = line[0],
                         sentence_b = line[1],
                         sentence_c = line[2], 
@@ -198,12 +198,101 @@ class Stsprocessor(AbsPreprocessor):
         return feature_list
     
 
+class Tripleprocessor(AbsPreprocessor):
+    """ file open -> tokenizing -> dataclasses"""
+    @staticmethod
+    def load_data(data_path:str, save_path:str=None, header:bool=True) -> List:
+        """  Object: [sentence1 | sentence2 | sentence3] 
+             sentence1 <----> sentence2 should be Positive
+             sentence1 <----> sentence3 should be Negative
+        """     
+        dataset = []
+        dataset.append(['sentence_a', 'sentence_b', 'sentence_c'])
+
+        sentences = dict()       
+        if isinstance(data_path, str):      
+            data_path = [data_path]
+
+        for train_file in data_path:
+            with open(train_file, 'r') as file:
+                for i, row in enumerate(file):
+                    if header and i==0:
+                        continue
+
+                    line = row.strip().split('\t')
+                    if len(line) < 3:
+                        continue
+
+                    sentence_a = line[0]
+                    sentence_b = line[1]
+                    sentence_c = line[2]
+                    dataset.append([sentence_a, sentence_b, sentence_c])
+             
+        if save_path is not None:
+            if os.path.exists(save_path):
+                logging.info(f'{save_path}: exists -> removing')
+                os.remove(save_path)
+
+            with open(save_path, 'a') as f:
+                for data in dataset:
+                    f.write('\t'.join(data) + '\n')
+            
+        return dataset
+            
+    @classmethod
+    def preprocess(cls, data_path, tokenizer:PreTrainedTokenizer, save_path, tokenizer_input: TokenizerInput=None, header:bool=True) -> None:
+        """ try read tsv file using pandas first if [memory or parse] error catched use other reading method  """
+    
+        feature_list = list()
+        skipped_line = 0
+
+        datasets = cls.load_data(data_path, save_path=save_path, header=header)
+        for i, line in enumerate(datasets):
+            try:
+                if (len(line) < 3) or (i==0):
+                    ## skip incomplete data && header
+                    skipped_line += 1
+                    continue
+
+                a_sentence = line[0]
+                b_sentence = line[1]
+                c_sentence = line[2]
+                a_encoded_sentence = cls.tokenizing(input=a_sentence, tokenizer=tokenizer, tokenizer_input=tokenizer_input)
+                b_encoded_sentence = cls.tokenizing(input=b_sentence, tokenizer=tokenizer, tokenizer_input=tokenizer_input)
+                c_encoded_sentence = cls.tokenizing(input=c_sentence, tokenizer=tokenizer, tokenizer_input=tokenizer_input)
+
+                feature_list.append(
+                    NLIInput(
+                        sentence_a = line[0],
+                        sentence_b = line[1],
+                        sentence_c = line[2], 
+
+                        a_input_ids = a_encoded_sentence.input_ids,
+                        a_attention_mask=a_encoded_sentence.attention_mask,
+
+                        b_input_ids=b_encoded_sentence.input_ids,
+                        b_attention_mask=b_encoded_sentence.attention_mask,
+
+                        c_input_ids = c_encoded_sentence.input_ids,
+                        c_attention_mask=c_encoded_sentence.attention_mask
+                    )
+                )
+            except Exception as e:
+                print(f'Error occurs in {i} lines in preprocessing')
+                print(line)
+                print(e)
+
+        return feature_list
+
+
 class PreprocessorFactory:
     def __new__(cls, data_type: str) -> AbsPreprocessor:
         if data_type.lower() == 'nli':
             return NliPreprocessor
         elif data_type.lower() == 'sts':
             return Stsprocessor
+        elif data_type.lower() == 'triple':
+            return Tripleprocessor
         else:
             raise ValueError(f"Invalid model type: {data_type}")
 

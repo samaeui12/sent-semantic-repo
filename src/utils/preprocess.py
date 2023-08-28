@@ -141,7 +141,7 @@ class Stsprocessor(AbsPreprocessor):
         for train_file in data_path:
             with open(train_file, 'r') as file:
                 for i, row in enumerate(file):
-                    if header and i==0:
+                    if (len(line) < 3) or (i==0):
                         continue
                     
                     line = row.strip().split('\t')
@@ -163,18 +163,15 @@ class Stsprocessor(AbsPreprocessor):
             return dataset
 
     @classmethod
-    def preprocess(cls, data_path, save_path, tokenizer: PreTrainedTokenizer, tokenizer_input:TokenizerInput=None, header=True, is_preprocessed:bool=False):
+    def preprocess(cls, data_path, save_path, tokenizer: PreTrainedTokenizer, tokenizer_input:TokenizerInput=None, header=True):
 
         datasets = cls.load_data(data_path, save_path=save_path, header=header)
         feature_list = list()
-
+        
         for i, line in enumerate(datasets):
             if header and i==0:
-                header = line.strip().split('\t')
                 continue
             
-            if is_preprocessed:
-                line = line.strip().split('\t')
 
             """ Header:  genre  |  filename  |	year  |   id	|  score  |   sentence1   |   sentence2  """
             sentence_a = line[0]

@@ -147,7 +147,8 @@ class SimcseTrainer(AbstractTrainer):
         self.scheduler = get_linear_schedule_with_warmup(
             self.optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps= total_step
         )   
-        self.loss_fct = Loss_MAPPING_DICT[self.args.loss]
+        loss_fct = Loss_MAPPING_DICT[self.args.loss]
+        self.loss_fct = loss_fct(**self.args)
         self.metrics = self.initialize_metrics(metrics=['spearman', 'pearson', 'train_loss', 'val_loss'])
         
     def cal_loss(self, batch):

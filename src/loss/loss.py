@@ -41,10 +41,11 @@ class TripletLoss(nn.Module):
     Triplet loss
     Takes embeddings of an anchor sample, a positive sample and a negative sample
     """
-    def __init__(self, margin, similarity_fct=SiameseDistanceMetric.COSINE_DISTANCE):
+    def __init__(self, margin, similarity_fct=SiameseDistanceMetric.COSINE_DISTANCE, temperature=0.05):
         super(TripletLoss, self).__init__()
         self.margin = margin
         self.similarity_fct = similarity_fct
+        self.temperature = temperature
 
     def forward(self, anchor:Tensor, positive:Tensor, negative:Tensor, label=None):
 
@@ -83,10 +84,11 @@ class OnlineContrastiveLoss(nn.Module):
         model.fit([(train_dataloader, train_loss)], show_progress_bar=True)
     """
 
-    def __init__(self, similarity_fct=SiameseDistanceMetric.COSINE_DISTANCE, margin: float = 0.5):
+    def __init__(self, temperature=0.05, similarity_fct=SiameseDistanceMetric.COSINE_DISTANCE, margin: float = 0.5):
         super(OnlineContrastiveLoss, self).__init__()
         self.margin = margin
         self.similarity_fct = similarity_fct
+        self.temperature = temperature
 
     def forward(self, anchor:Tensor, positive:Tensor, negative:Tensor, label=None):
         
@@ -135,13 +137,14 @@ class MultipleNegativesRankingLoss(nn.Module):
             train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=32)
             train_loss = losses.MultipleNegativesRankingLoss(model=model)
     """
-    def __init__(self, temperature: float = 0.05, similarity_fct = SiameseDistanceMetric.COSINE_DISTANCE):
+    def __init__(self, margin = None, temperature: float = 0.05, similarity_fct = SiameseDistanceMetric.COSINE_DISTANCE):
         """
         :param model: SentenceTransformer model
         :param scale: Output of similarity function is multiplied by scale value
         :param similarity_fct: similarity function between sentence embeddings. By default, cos_sim. Can also be set to dot product (and then set scale to 1)
         """
         super(MultipleNegativesRankingLoss, self).__init__()
+        self.margin = margin
         self.temperature = temperature
         self.similarity_fct = similarity_fct
         self.cross_entropy_loss = nn.CrossEntropyLoss()

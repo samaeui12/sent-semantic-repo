@@ -160,7 +160,7 @@ class MultipleNegativesRankingLoss(nn.Module):
         matrix = concat_norm.matmul(concat_norm.transpose(1, 0))
         matrix_mask = torch.eye(concat_batch_size, device=concat_norm.device, dtype=torch.bool)
         matrix = matrix.masked_fill(matrix_mask, float('-inf'))
-        matrix = matrix / self.args.temperature
+        matrix = matrix / self.temperature
         final_loss = self.cross_entropy_loss(matrix[:batch_size], label)
         return final_loss
 

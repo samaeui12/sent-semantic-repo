@@ -163,7 +163,7 @@ class SimcseTrainer(AbstractTrainer):
         
         return final_loss
 
-    def train(self, model_type, train_dataset, test_dataset, model=None, tokenizer=None) -> Dict[str, float]:
+    def train(self, model_type, train_dataset, val_dataset, model=None, tokenizer=None) -> Dict[str, float]:
         global_step = 0
         self.model_setting(model_type=model_type, train_dataset=train_dataset, model=model, tokenizer=tokenizer)
 
@@ -186,7 +186,7 @@ class SimcseTrainer(AbstractTrainer):
             if train_loss < self.best_train_loss:
                 self.best_train_loss = train_loss 
 
-            eval_result = self.validate(test_dataset, epoch=i)
+            eval_result = self.validate(val_dataset, epoch=i)
             is_early_stop = self.early_stop(eval_result, criterias=['spearman', 'val_loss'], epoch=i, key=self.args.metric)
             if is_early_stop:
                 break
@@ -247,9 +247,9 @@ class SimcseTrainer(AbstractTrainer):
 
         return global_step, final_loss
         
-    def validate(self, test_dataset, epoch) -> Dict[str, float]:
+    def validate(self, val_dataset, epoch) -> Dict[str, float]:
         """ evaluate using STS dataset """
-        test_dataloader = test_dataset.loader(
+        val_dataloader = val_dataset.loader(
             shuffle=False, batch_size=self.args.eval_batch_size
         )
         loss_fct = nn.MSELoss()
@@ -263,7 +263,7 @@ class SimcseTrainer(AbstractTrainer):
         
         self.model.eval()
         with torch.no_grad():
-            for batch in tqdm(test_dataloader, desc="Evaluating", leave=False):
+            for batch in tqdm(val_dataloader, desc="Evaluating", leave=False):
                 batch = {key: (item.to(self.args.device) if type(item) == torch.Tensor else item) for key, item in batch.items()}
                 with torch.no_grad():
                     ## a sentence

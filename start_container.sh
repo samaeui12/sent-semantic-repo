@@ -84,7 +84,6 @@ echo "#######################"
 if [[ $GPU_NUMBER == -1 ]]; then
     sudo docker run --gpus all \
     -it --name $TODAY_CONTAINER_NAME \
-    -e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \
     --ip 0.0.0.0 \
     --memory=${MEMORY} \
     -p 40004:6006 \
@@ -106,3 +105,4 @@ fi
 {
     jupyter lab --no-browser --allow-root --ip=0.0.0.0 --port=8888
 }
+#-e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \

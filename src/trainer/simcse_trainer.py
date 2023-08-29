@@ -203,13 +203,13 @@ class SimcseTrainer(AbstractTrainer):
         for batch_idx, batch in enumerate(tqdm(self.train_dataloader)): 
 
             batch = {key: (item.to(self.args.device) if type(item) == torch.Tensor else item) for key, item in batch.items()}            
-            if self.args.amp:
+            if self.args.amp_use:
                 with amp.autocast():
                     final_loss = self.cal_loss(batch=batch)
+
                 if self.args.n_gpu > 1:
                     final_loss = final_loss.mean()
                     print(f'final_loss: {final_loss}')
-
                 self.scaler.scale(final_loss).backward()
                 # Update the gradient accumulation counter
                 accumulation_steps += 1

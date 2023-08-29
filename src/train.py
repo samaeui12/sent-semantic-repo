@@ -57,13 +57,9 @@ def main(args):
 
     logging.info("load features")
 
-    if args.is_preprocessed:
-        data_path = None
-    else:
-        #/app/data/open_data/KorNLI/multinli.train.ko.tsv
-        mnli_train = os.path.join(args.train_file, 'multinli.train.ko.tsv')
-        snli_train = os.path.join(args.train_file, 'snli_1.0_train.ko.tsv')
-        data_path = [mnli_train, snli_train]
+    mnli_train = os.path.join(args.train_file, 'multinli.train.ko.tsv')
+    snli_train = os.path.join(args.train_file, 'snli_1.0_train.ko.tsv')
+    data_path = [mnli_train, snli_train]
 
     preprocessor = PreprocessorFactory(data_type=args.data_type)
     train_features = preprocessor.preprocess(

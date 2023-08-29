@@ -106,6 +106,11 @@ def nli_parser_model_args():
         type=str,
     )
     parser.add_argument(
+        "--margin",
+        default='0.5',
+        type=float,
+    )
+    parser.add_argument(
         "--loss",
         default='MultipleNegativesRankingLoss',
         type=str,

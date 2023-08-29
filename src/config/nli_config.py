@@ -118,7 +118,7 @@ def nli_parser_model_args():
     parser.add_argument(
         "--loss",
         default='TripletLoss',
-        choices=['TripletLoss', 'MultipleNegativesRankingLoss', 'OnlineContrastiveLoss']
+        choices=['TripletLoss', 'MultipleNegativesRankingLoss', 'OnlineContrastiveLoss'],
         type=str,
     )
     parser.add_argument(

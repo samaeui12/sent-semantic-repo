@@ -227,6 +227,7 @@ class SimcseTrainer(AbstractTrainer):
                     print(f'final_loss: {final_loss}')
                             
                 final_loss.backward()
+                print(f'backwards done')
                 # Update the gradient accumulation counter
                 accumulation_steps += 1
                 # Only perform optimizer step, gradient clipping, and zero gradients after the specified number of accumulation steps

@@ -117,8 +117,8 @@ class SimcseTrainer(AbstractTrainer):
             self.tokenizer = tokenizer
 
         """ nn.distributed setting Not implemented yet """
-        #if self.args.n_gpu > 1 and not isinstance(self.model, torch.nn.DataParallel):
-        #    self.model = torch.nn.DataParallel(self.model)
+        if self.args.n_gpu > 1 and not isinstance(self.model, torch.nn.DataParallel):
+            self.model = torch.nn.DataParallel(self.model)
 
         self.model.to(self.args.device)
 
@@ -197,10 +197,8 @@ class SimcseTrainer(AbstractTrainer):
         
         self.model.train()
         self.optimizer.zero_grad()
-
         train_losses = []
         accumulation_steps = 0
-
         for batch_idx, batch in enumerate(tqdm(self.train_dataloader)): 
 
             batch = {key: (item.to(self.args.device) if type(item) == torch.Tensor else item) for key, item in batch.items()}            
@@ -225,10 +223,8 @@ class SimcseTrainer(AbstractTrainer):
                 final_loss = self.cal_loss(batch=batch)
                 if self.args.n_gpu > 1:
                     final_loss = final_loss.mean()
-                    print(f'final_loss: {final_loss}')
                             
                 final_loss.backward()
-                print(f'backwards done')
                 # Update the gradient accumulation counter
                 accumulation_steps += 1
                 # Only perform optimizer step, gradient clipping, and zero gradients after the specified number of accumulation steps

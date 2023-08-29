@@ -44,7 +44,7 @@ do
 done
 
 if [[ -z ${IMAGE_NAME} ]]; then
-    IMAGE_NAME='semantic-library_images:test'
+    IMAGE_NAME='registry.tde.sktelecom.com/aisearch/docker-model-images/semantic-search-lib:latest'
 fi
 
 if [[ -z ${MODE} ]]; then

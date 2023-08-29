@@ -101,10 +101,16 @@ def nli_parser_model_args():
         help="must select model type in [{}]".format(", ".join(MODEL_MAPPING_DICT)),
     )
     parser.add_argument(
-        "--data_type",
+        "--train_data_type",
         default='nli',
         type=str,
     )
+    parser.add_argument(
+        "--val_data_type",
+        default='sts',
+        type=str,
+    )
+    pa
     parser.add_argument(
         "--margin",
         default='0.5',

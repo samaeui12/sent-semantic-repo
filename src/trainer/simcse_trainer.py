@@ -118,7 +118,7 @@ class SimcseTrainer(AbstractTrainer):
 
         """ nn.distributed setting Not implemented yet """
         if self.args.n_gpu > 1 and not isinstance(self.model, torch.nn.DataParallel):
-            self.model = torch.nn.DataParallel(self.model)
+            self.model = torch.nn.DataParallel(self.model, device_ids=[0,1])
 
         self.model.to(self.args.device)
 

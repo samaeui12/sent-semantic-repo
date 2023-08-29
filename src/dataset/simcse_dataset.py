@@ -65,6 +65,7 @@ class Unsup_simcse(Dataset):
         """ cut data if size > target_size else: fill by self.pad_token_id """
         for i, (input_id, attention_m, size) in enumerate(
                 zip(a_input_ids, a_attention_mask, sizes)):
+            
             diff = target_size - size
             if diff < 0:
                 a_collated_ids[i, :target_size] = input_id[:target_size]
@@ -83,6 +84,7 @@ class Unsup_simcse(Dataset):
 
         for i, (input_id, attention_m, size) in enumerate(
                 zip(b_input_ids, b_attention_mask, sizes)):
+            
             diff = target_size - size
             if diff < 0:
                 b_collated_ids[i, :target_size] = input_id[:target_size]
@@ -100,6 +102,7 @@ class Unsup_simcse(Dataset):
         c_collated_attention_masks = torch.zeros((batch_size, target_size), dtype=torch.long)
         for i, (input_id, attention_m, size) in enumerate(
                 zip(c_input_ids, c_attention_mask, sizes)):
+            
             diff = target_size - size
             if diff < 0:
                 c_collated_ids[i, :target_size] = input_id[:target_size]

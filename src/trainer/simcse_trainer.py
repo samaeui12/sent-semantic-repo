@@ -157,6 +157,7 @@ class SimcseTrainer(AbstractTrainer):
         a_embedding = self.model(batch['a_input_ids'], batch['a_attention_mask'])
         b_embedding = self.model(batch['b_input_ids'], batch['b_attention_mask'])
         c_embedding = self.model(batch['c_input_ids'], batch['c_attention_mask'])
+        print(a_embedding.size())
         a_norm = a_embedding / a_embedding.norm(dim=1)[:, None]
         b_norm = b_embedding / b_embedding.norm(dim=1)[:, None]
         c_norm = c_embedding / c_embedding.norm(dim=1)[:, None]

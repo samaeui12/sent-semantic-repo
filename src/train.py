@@ -96,7 +96,9 @@ def main(args):
     #     eval_result = trainer.validate(test_dataset=test_dataset, epoch=0)
 
     trainer = SimcseTrainer(args=args, logger=logging)
-    trainer.train(model=model, tokenizer=tokenizer, train_dataset=train_dataset, val_dataset=val_dataset, model_type=args.model_type)
+    trainer.model_setting(model_type=args.model_type, train_dataset=train_dataset, model=model, tokenizer=tokenizer)
+    eval_result = trainer.validate(test_dataset=val_dataset, epoch=0)
+    #trainer.train(model=model, tokenizer=tokenizer, train_dataset=train_dataset, val_dataset=val_dataset, model_type=args.model_type)
 
     
 if __name__ == "__main__":

@@ -87,16 +87,16 @@ def main(args):
     train_dataset = DATASET_MAPPING_DICT['Unsup_simcse']
     train_dataset = train_dataset(args=args, features=train_features, max_length=args.model_max_len, tokenizer=tokenizer)
 
-    test_dataset = DATASET_MAPPING_DICT['StsDataset']
-    test_dataset = test_dataset(args=args, features=valid_features, max_length=args.model_max_len, tokenizer=tokenizer)
+    val_dataset = DATASET_MAPPING_DICT['StsDataset']
+    val_dataset = val_dataset(args=args, features=valid_features, max_length=args.model_max_len, tokenizer=tokenizer)
 
-    if args.valid_first:
-        """ validation check without learning """
-        trainer.model_setting(model_type=args.model_type, train_dataset=train_dataset, model=model, tokenizer=tokenizer)
-        eval_result = trainer.validate(test_dataset=test_dataset, epoch=0)
+    # if args.valid_first:
+    #     """ validation check without learning """
+    #     trainer.model_setting(model_type=args.model_type, train_dataset=train_dataset, model=model, tokenizer=tokenizer)
+    #     eval_result = trainer.validate(test_dataset=test_dataset, epoch=0)
 
-    trainer= SimcseTrainer(args=args, logger=logging)
-    trainer.train(model=model, tokenizer=tokenizer, train_dataset=train_dataset, test_dataset=test_dataset, model_type=args.model_type)
+    trainer = SimcseTrainer(args=args, logger=logging)
+    trainer.train(model=model, tokenizer=tokenizer, train_dataset=train_dataset, val_dataset=val_dataset, model_type=args.model_type)
 
     
 if __name__ == "__main__":

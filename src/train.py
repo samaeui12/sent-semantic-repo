@@ -31,7 +31,6 @@ def main(args):
     args.log_dir = f'/app/data/log/{args.pretrained_model}'
     args.experiments_path = f'/app/data/experiment/{args.pretrained_model}'
     args.model_max_len = 50
-    args.is_preprocessed = True
     args.valid_first = False
 
     """ initialize seed """

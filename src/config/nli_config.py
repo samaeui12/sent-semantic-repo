@@ -7,14 +7,14 @@ def nli_parser_model_args():
 
     parser.add_argument(
         "--train_file",
-        default='/app/data/open_data/preprocess/KorNLI',
+        default='/app/data/open_data/KorNLI',
         #required=True,
         type=str,
         help="The input training data file."
     )
     parser.add_argument(
         "--valid_file",
-        default='/app/data/open_data/preprocess/KorSTS',
+        default='/app/data/open_data/KorSTS',
         #required=True,
         type=str,
         help="The input training data file.",

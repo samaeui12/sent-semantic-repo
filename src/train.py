@@ -60,7 +60,7 @@ def main(args):
     snli_train = os.path.join(args.train_file, 'snli_1.0_train.ko.tsv')
     data_path = [mnli_train, snli_train]
 
-    preprocessor = PreprocessorFactory(data_type=args.data_type)
+    preprocessor = PreprocessorFactory(data_type=args.train_data_type)
     train_features = preprocessor.preprocess(
                               data_path=data_path,
                               tokenizer=tokenizer, 
@@ -75,7 +75,7 @@ def main(args):
     logging.info("Build valid data")
     
     data_path = '/app/data/open_data/KorSTS/sts-train.tsv'
-    preprocessor = PreprocessorFactory(data_type='sts')
+    preprocessor = PreprocessorFactory(data_type=args.val_data_type)
     valid_features = preprocessor.preprocess(
                               data_path=data_path,
                               tokenizer=tokenizer, 

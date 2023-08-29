@@ -117,8 +117,8 @@ class SimcseTrainer(AbstractTrainer):
             self.tokenizer = tokenizer
 
         """ nn.distributed setting Not implemented yet """
-        if self.args.n_gpu > 1 and not isinstance(self.model, torch.nn.DataParallel):
-            self.model = torch.nn.DataParallel(self.model)
+        #if self.args.n_gpu > 1 and not isinstance(self.model, torch.nn.DataParallel):
+        #    self.model = torch.nn.DataParallel(self.model)
 
         self.model.to(self.args.device)
 

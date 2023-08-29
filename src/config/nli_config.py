@@ -121,7 +121,7 @@ def nli_parser_model_args():
 
     parser.add_argument(
         "--amp_use",
-        default=True,
+        default=False,
         type=bool,
         help="use amp or not "
     )

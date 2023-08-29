@@ -110,7 +110,6 @@ def nli_parser_model_args():
         default='sts',
         type=str,
     )
-    pa
     parser.add_argument(
         "--margin",
         default='0.5',

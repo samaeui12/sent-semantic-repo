@@ -74,7 +74,8 @@ def main(args):
     
     logging.info("Build valid data")
     
-    preprocessor = PreprocessorFactory(model_type='sts')
+    data_path = '/app/data/open_data/KorSTS/sts-train.tsv'
+    preprocessor = PreprocessorFactory(data_type='sts')
     valid_features = preprocessor.preprocess(
                               data_path=data_path,
                               tokenizer=tokenizer, 

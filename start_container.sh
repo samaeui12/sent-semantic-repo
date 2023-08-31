@@ -85,7 +85,7 @@ echo "#######################"
 sudo docker run -it --name $TODAY_CONTAINER_NAME \
 -e NVIDIA_VISIBLE_DEVICES='0,1' \
 --ip 0.0.0.0 \
---memory='80g'\
+--memory='80g' \
 -p 40004:6006 \
 -p 40002:8888 \
 -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code \

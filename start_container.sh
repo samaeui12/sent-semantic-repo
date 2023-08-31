@@ -81,28 +81,17 @@ echo "#######################"
     echo "CHECKED NO CONTAINER [$TODAY_CONTAINER_NAME] EXISTENCE"
 }
 
-if [[ $GPU_NUMBER == -1 ]]; then
-    sudo docker run --gpus all \
-    -it --name $TODAY_CONTAINER_NAME \
-    --ip 0.0.0.0 \
-    --memory=${MEMORY} \
-    -p 40004:6006 \
-    -p 40002:8888 \
-    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code \ 
-    $IMAGE_NAME
 
-else
-    sudo docker run --gpus '"device='$GPU_NUMBER'"' \
-    -it --name $TODAY_CONTAINER_NAME \
-    -e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \
-    --ip 0.0.0.0 \
-    --memory=${MEMORY} \
-    -p 40004:6006 \
-    -p 40002:8888 \
-    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code \
-    $IMAGE_NAME
-fi
+sudo docker run -it --name $TODAY_CONTAINER_NAME \
+-e NVIDIA_VISIBLE_DEVICES= 0,1 \
+--ip 0.0.0.0 \
+--memory=${MEMORY} \
+-p 40004:6006 \
+-p 40002:8888 \
+-v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code \
+$IMAGE_NAME
+
+
 {
     jupyter lab --no-browser --allow-root --ip=0.0.0.0 --port=8888
 }
-#-e NVIDIA_VISIBLE_DEVICES=$GPU_NUMBER \

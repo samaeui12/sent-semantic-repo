@@ -88,7 +88,7 @@ if [[ $GPU_NUMBER == -1 ]]; then
     --memory=${MEMORY} \
     -p 40004:6006 \
     -p 40002:8888 \
-    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code -v /usr/local/cuda:/usr/local/cuda \
+    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code \ 
     $IMAGE_NAME
 
 else
@@ -99,7 +99,7 @@ else
     --memory=${MEMORY} \
     -p 40004:6006 \
     -p 40002:8888 \
-    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code -v /usr/local/cuda:/usr/local/cuda \
+    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code \
     $IMAGE_NAME
 fi
 {

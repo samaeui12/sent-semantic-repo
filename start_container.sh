@@ -83,7 +83,7 @@ echo "#######################"
 
 
 sudo docker run -it --name $TODAY_CONTAINER_NAME \
--e NVIDIA_VISIBLE_DEVICES= '0,1' \
+-e NVIDIA_VISIBLE_DEVICES='0,1' \
 --ip 0.0.0.0 \
 --memory='80g'\
 -p 40004:6006 \

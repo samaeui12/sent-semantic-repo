@@ -83,7 +83,7 @@ echo "#######################"
 
 
 sudo docker run -it --name $TODAY_CONTAINER_NAME \
---gpus='0,1' \
+--gpus '"device=0,1"' \
 --ip 0.0.0.0 \
 --memory='80g' \
 -p 40004:6006 \

@@ -19,7 +19,7 @@ from itertools import product
 
 ## transformers library import
 from transformers.tokenization_utils import PreTrainedTokenizer
-from utils import AbsPreprocessor
+from .abs_preprocess import AbsPreprocessor
 
 class NliPreprocessor(AbsPreprocessor):
     """ file open -> tokenizing -> dataclasses"""

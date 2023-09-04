@@ -16,6 +16,7 @@ from io import StringIO
 from input import NLIInput, TokenizerInput, StsInput
 import dataclasses
 from itertools import product
+import random
 
 ## transformers library import
 from transformers.tokenization_utils import PreTrainedTokenizer
@@ -356,14 +357,32 @@ class Stsprocessor(AbsPreprocessor):
 
 class Faqprocessor(AbsPreprocessor):
     """ file open -> tokenizing -> dataclasses"""
-    @staticmethod
-    def load_data(data_path:str, save_path:str=None, header:bool=True) -> List:
+
+    @classmethod
+    def negative_sampling(cls, row, label_list:list, sample_size:int, p:list, label2query:dict):
+        result = []
+        random_list = random.choices(
+            label_list, weights=p, k=sample_size
+        )
+        
+        query_text = row[0]
+        query_label = row[1]
+        sample_inds = [i for i in random_list if int(i) != int(query_label)]
+        
+        for sample_ind in sample_inds:
+            result.append([query_text, label2query[query_label], label2query[sample_ind]])
+            
+        return result
+
+
+    @classmethod
+    def load_data(cls, data_path:str, label_list, label2query, save_path:str=None, header:bool=False) -> List:
         """  Object: [sentence1 | sentence2 | sentence3] 
              sentence1 <----> sentence2 should be Positive
              sentence1 <----> sentence3 should be Negative
         """     
         dataset = []
-        dataset.append(['sentence_a', 'sentence_b', 'sentence_c'])
+        dataset.append(['sentence_a', 'query_label', 'answer_label'])
 
         sentences = dict()       
         if isinstance(data_path, str):      
@@ -375,14 +394,12 @@ class Faqprocessor(AbsPreprocessor):
                     if header and i==0:
                         continue
 
-                    line = eval(row)
-                    if len(line) < 3:
+                    row = row.strip().split('\t')
+                    if len(row) < 3:
                         continue
+                    
+                    dataset = cls.negative_sampling(row=row, label_list=label_list, sample_size=30, label2query=label2query)
 
-                    sentence_a = line[0]
-                    sentence_b = line[1]
-                    sentence_c = line[2]
-                    dataset.append([sentence_a, sentence_b, sentence_c])
              
         if save_path is not None:
             if os.path.exists(save_path):

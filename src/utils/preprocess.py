@@ -17,6 +17,7 @@ from input import NLIInput, TokenizerInput, StsInput
 import dataclasses
 from itertools import product
 import random
+from tqdm import tqdm
 
 ## transformers library import
 from transformers.tokenization_utils import PreTrainedTokenizer
@@ -411,7 +412,7 @@ class Faqprocessor(AbsPreprocessor):
         skipped_line = 0
 
         datasets = cls.load_data(data_path, header=header, p=p, label2query=label2query, label_list=label_list)
-        for i, line in enumerate(datasets):
+        for i, line in tqdm(enumerate(datasets)):
             try:
                 if (len(line) < 3) or (i==0):
                     ## skip incomplete data && header

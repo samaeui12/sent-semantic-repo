@@ -376,7 +376,7 @@ class Faqprocessor(AbsPreprocessor):
 
 
     @classmethod
-    def load_data(cls, data_path:str, label_list, label2query, header:bool=False) -> List:
+    def load_data(cls, data_path:str, label_list, p, label2query, header:bool=False) -> List:
         """  Object: [sentence1 | sentence2 | sentence3] 
              sentence1 <----> sentence2 should be Positive
              sentence1 <----> sentence3 should be Negative
@@ -398,18 +398,18 @@ class Faqprocessor(AbsPreprocessor):
                     if len(row) < 3:
                         continue
                     
-                    dataset = cls.negative_sampling(row=row, label_list=label_list, sample_size=30, label2query=label2query)
+                    dataset = cls.negative_sampling(row=row, label_list=label_list, p=p, sample_size=30, label2query=label2query)
 
         return dataset
             
     @classmethod
-    def preprocess(cls, data_path, label2query, label_list ,tokenizer:PreTrainedTokenizer, tokenizer_input: TokenizerInput=None, header:bool=True) -> None:
+    def preprocess(cls, data_path, label2query, label_list, p, tokenizer:PreTrainedTokenizer, tokenizer_input: TokenizerInput=None, header:bool=True) -> None:
         """ try read tsv file using pandas first if [memory or parse] error catched use other reading method  """
     
         feature_list = list()
         skipped_line = 0
 
-        datasets = cls.load_data(data_path, header=header, label2query=label2query, label_list=label_list)
+        datasets = cls.load_data(data_path, header=header, p=p, label2query=label2query, label_list=label_list)
         for i, line in enumerate(datasets):
             try:
                 if (len(line) < 3) or (i==0):

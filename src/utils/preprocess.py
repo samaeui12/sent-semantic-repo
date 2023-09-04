@@ -363,8 +363,7 @@ class Faqprocessor(AbsPreprocessor):
     def negative_sampling(cls, row, label_list:list, sample_size:int, p:list, label2query:dict):
         result = []
         random_list = random.choices(
-            label_list, weights=p, k=sample_size
-        )
+            label_list, weights=p, k=sample_size, replace=False)
         
         query_text = row[0]
         query_label = row[1]

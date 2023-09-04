@@ -370,7 +370,7 @@ class Faqprocessor(AbsPreprocessor):
         sample_inds = [i for i in random_list if int(i) != int(query_label)]
         
         for sample_ind in sample_inds:
-            result.append([query_text, label2query[query_label], label2query[sample_ind]])
+            result.append([query_text, label2query[int(query_label)], label2query[int(sample_ind)]])
             
         return result
 

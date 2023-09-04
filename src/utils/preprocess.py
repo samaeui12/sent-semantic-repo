@@ -16,7 +16,7 @@ from io import StringIO
 from input import NLIInput, TokenizerInput, StsInput
 import dataclasses
 from itertools import product
-import random
+from numpy import random
 from tqdm import tqdm
 
 ## transformers library import
@@ -362,8 +362,8 @@ class Faqprocessor(AbsPreprocessor):
     @classmethod
     def negative_sampling(cls, row, label_list:list, sample_size:int, p:list, label2query:dict):
         result = []
-        random_list = random.choices(
-            label_list, weights=p, k=sample_size, replace=False)
+        random_list = random.choice(
+            label_list, p=p, size=sample_size, replace=False)
         
         query_text = row[0]
         query_label = row[1]

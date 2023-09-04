@@ -398,7 +398,8 @@ class Faqprocessor(AbsPreprocessor):
                     if len(row) < 3:
                         continue
                     
-                    dataset.append(cls.negative_sampling(row=row, label_list=label_list, p=p, sample_size=30, label2query=label2query))
+                    sampled_data = cls.negative_sampling(row=row, label_list=label_list, p=p, sample_size=30, label2query=label2query)
+                    dataset.append(sampled_data)
 
         return dataset
             

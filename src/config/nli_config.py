@@ -2,24 +2,21 @@ import argparse
 from utils import get_model_argparse
 from model import MODEL_MAPPING_DICT
 
+
 def nli_parser_model_args():
     parser = argparse.ArgumentParser()
-
     parser.add_argument(
         "--train_file",
-        default='/app/data/open_data/KorNLI',
-        #required=True,
+        default='/app/data/semantic-search-lib/train',
         type=str,
         help="The input training data file."
     )
     parser.add_argument(
         "--valid_file",
-        default='/app/data/open_data/KorSTS',
-        #required=True,
+        default='/app/data/semantic-search-lib/test',
         type=str,
         help="The input training data file.",
     )
-
     parser.add_argument(
         "--experiments_path",
         type=str,
@@ -32,7 +29,6 @@ def nli_parser_model_args():
         type=str,
         help="The input training data file."
     )
-
     parser.add_argument(
         "--train_batch_size",
         default=256,
@@ -129,7 +125,6 @@ def nli_parser_model_args():
     )
     parser.add_argument("--no_cuda", action="store_true", help="Avoid using CUDA when available")
     parser.add_argument("--seed", type=int, default=42, help="random seed for initialization")
-
     parser.add_argument(
         "--amp_use",
         default=True,
@@ -165,5 +160,4 @@ def nli_parser_model_args():
     )
     parser = get_model_argparse(parser)
     args = parser.parse_args(args=[])
-    #args = parser.parse_args()
     return args

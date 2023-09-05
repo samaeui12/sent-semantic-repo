@@ -1,6 +1,7 @@
 # coding: utf-8
 import yaml
 
+
 class YamlParser:
     def __init__(self, yaml_file):
         """

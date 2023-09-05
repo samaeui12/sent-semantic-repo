@@ -48,7 +48,7 @@ if [[ -z ${IMAGE_NAME} ]]; then
 fi
 
 if [[ -z ${MODE} ]]; then
-    MODE='stg'
+    MODE='dev'
 fi
 
 if [[ -z ${GPU_NUMBER} ]]; then
@@ -60,7 +60,7 @@ if [[ -z ${DATE} ]]; then
 fi
 
 if [[ -z ${CONTAINER_NAME} ]]; then
-    CONTAINER_NAME='hwan'
+    CONTAINER_NAME='kt'
 fi
 
 TODAY_CONTAINER_NAME=$CONTAINER_NAME"_if_kill_war_begin"
@@ -100,9 +100,12 @@ else
     --memory=${MEMORY} \
     -p 40004:6006 \
     -p 40002:8888 \
-    -v /app/data/air-cupid:/app/data -v /app/service/semantic-search-lib:/app/code -v /usr/local/cuda:/usr/local/cuda \
+    -v /app/data/semantic-search-lib:/app/data -v /app/service/semantic-search-lib:/app/code -v /usr/local/cuda:/usr/local/cuda \
     $IMAGE_NAME
 fi
-{
-    jupyter lab --no-browser --allow-root --ip=0.0.0.0 --port=8888
-}
+
+#{
+#    jupyter lab --no-browser --allow-root --ip=0.0.0.0 --port=8888
+#}
+
+# sh start_container.sh -i semantic-library_images:test -c kt

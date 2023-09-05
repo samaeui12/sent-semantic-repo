@@ -12,14 +12,7 @@ from torch.utils.data import (
 )
 
 class Unsup_simcse(Dataset):
-    def __init__(
-            self,
-            args,
-            features:List[NLIInput],
-            max_length,
-            tokenizer,
-            **kwargs
-    ):
+    def __init__(self, args, features:List[NLIInput], max_length, tokenizer):
         super(Unsup_simcse, self).__init__()
         self.args = args
         self.features = features

@@ -78,9 +78,9 @@ class NliPreprocessor(AbsPreprocessor):
 
         # make dataset for mno dataset
         if 'train' in data_path:
-            file_num = 19
+            file_num = 1
         else:
-            file_num = 5
+            file_num = 1
         for i in range(file_num):
             file_name = 'mno_faq_split_{0:02d}.json'.format(i)
             data_file_path = os.path.join(data_path, file_name)
@@ -154,7 +154,7 @@ class Stsprocessor(AbsPreprocessor):
         for train_file in data_path:
             with open(train_file, 'r') as file:
                 for i, row in enumerate(file):
-                    if header and i==0:
+                    if header and i == 0:
                         continue
 
                     line = row.strip().split('\t')

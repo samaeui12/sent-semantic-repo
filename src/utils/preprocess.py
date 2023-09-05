@@ -1,23 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-## python library import
 import os
-import re
 import sys
 import logging
+import ast
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from typing import List, Dict, Union
-import sys
-import pandas as pd
-import csv
-from common import YamlParser
-from io import StringIO
+from typing import List, Union
 from input import NLIInput, TokenizerInput, StsInput
-import dataclasses
-from itertools import product
 
-## transformers library import
 from transformers.tokenization_utils import PreTrainedTokenizer
 from utils import AbsPreprocessor
 
@@ -96,7 +86,7 @@ class NliPreprocessor(AbsPreprocessor):
             data_file_path = os.path.join(data_path, file_name)
             with open(data_file_path, 'r') as file:
                 for idx, row in enumerate(file):
-                    print((row[0], row[1], row[2]))
+                    row = ast.literal_eval(row)
                     dataset.append((row[0], row[1], row[2]))
 
         if save_path is not None:

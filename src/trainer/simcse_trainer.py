@@ -15,7 +15,7 @@ from transformers import (
     get_linear_schedule_with_warmup,
     AutoTokenizer,
 )
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from model import MODEL_MAPPING_DICT
 from trainer.abs_trainer import AbstractTrainer
 from scipy.stats import pearsonr, spearmanr

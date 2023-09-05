@@ -57,7 +57,7 @@ class SummaryWriter:
         if self.hparams is None:
             self.hparams = pd.DataFrame(self.writer, index=[0])
         else:
-            self.hparams = self.hparams.append(self.writer, ignore_index=True)
+            self.hparams = pd.concat([self.hparams, pd.DataFrame([self.writer])], ignore_index=True)
         self.save()
         logging.info("save experiment info [{}]".format(self.dir))
 

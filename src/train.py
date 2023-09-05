@@ -60,6 +60,7 @@ def main(args):
                               save_path=None)
 
     # print train features head
+    print("print train features head")
     for i in range(len(train_features)):
         if i < 10:
             print(train_features[i].sentence_c)

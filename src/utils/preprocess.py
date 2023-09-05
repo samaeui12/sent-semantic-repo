@@ -96,6 +96,7 @@ class NliPreprocessor(AbsPreprocessor):
             data_file_path = os.path.join(data_path, file_name)
             with open(data_file_path, 'r') as file:
                 for idx, row in enumerate(file):
+                    print((row[0], row[1], row[2]))
                     dataset.append((row[0], row[1], row[2]))
 
         if save_path is not None:

@@ -7,13 +7,13 @@ def nli_parser_model_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--train_file",
-        default='/app/data/semantic-search-lib/train',
+        default='/app/data/train',
         type=str,
         help="The input training data file."
     )
     parser.add_argument(
         "--valid_file",
-        default='/app/data/semantic-search-lib/test',
+        default='/app/data/test',
         type=str,
         help="The input test data file.",
     )

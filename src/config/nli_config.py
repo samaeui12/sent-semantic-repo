@@ -104,7 +104,7 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--val_data_type",
-        default='sts',
+        default='nli',
         type=str,
     )
     parser.add_argument(

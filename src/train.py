@@ -53,7 +53,7 @@ def main(args):
     # snli_train = os.path.join(args.train_file, 'snli_1.0_train.ko.tsv')
     # mno_train = os.path.join(args.train_file, 'mno_train.tsv')
     # data_path = [mnli_train, snli_train, mno_train]
-    preprocessor = PreprocessorFactory(data_type=args.data_type)
+    preprocessor = PreprocessorFactory(data_type=args.train_data_type)
     train_features = preprocessor.preprocess(
                               data_path=args.train_file,
                               tokenizer=tokenizer, 
@@ -68,7 +68,7 @@ def main(args):
 
     # load valid data
     logging.info("Build valid data")
-    preprocessor = PreprocessorFactory(data_type=args.data_type)
+    preprocessor = PreprocessorFactory(data_type=args.val_data_type)
     valid_features = preprocessor.preprocess(
                               data_path=args.valid_file,
                               tokenizer=tokenizer,

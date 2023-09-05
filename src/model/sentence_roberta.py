@@ -36,7 +36,7 @@ class SentRobertaModel(RobertaPreTrainedModel):
         return torch.sum(last_hidden_state * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
     def forward(self, input_ids: torch.Tensor = None, attention_mask: torch.Tensor = None, **kwargs):
-        print('input model', input_ids.size())
+        # print('input model', input_ids.size())
         model_outputs = self.roberta(input_ids=input_ids, attention_mask=attention_mask)
 
         if isinstance(model_outputs, tuple):

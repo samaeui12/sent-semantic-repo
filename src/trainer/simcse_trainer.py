@@ -253,7 +253,7 @@ class SimcseTrainer(AbstractTrainer):
                     final_loss = self.cal_loss(batch=batch)
                     if self.args.n_gpu > 1:
                         loss = final_loss.mean()
-                        print(f'loss: {loss}')
+                        # print(f'loss: {loss}')
                     eval_loss += loss.detach().cpu().item()
                 nb_eval_steps += 1
 

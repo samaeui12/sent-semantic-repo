@@ -5,6 +5,7 @@ from torch import Tensor
 import torch.nn.functional as F
 from enum import Enum
 
+
 class SiameseDistanceMetric(Enum):
     """
     The metric for the contrastive loss
@@ -12,7 +13,7 @@ class SiameseDistanceMetric(Enum):
     EUCLIDEAN = lambda x, y: F.pairwise_distance(x, y, p=2)
     MANHATTAN = lambda x, y: F.pairwise_distance(x, y, p=1)
     COSINE_SIM = lambda x, y: F.cosine_similarity(x, y)
-    #COSINE_DISTANCE = lambda x, y: 1-F.cosine_similarity(x, y)
+
 
 def cos_sim(a: Tensor, b: Tensor):
     """
@@ -21,13 +22,10 @@ def cos_sim(a: Tensor, b: Tensor):
     """
     if not isinstance(a, torch.Tensor):
         a = torch.tensor(a)
-
     if not isinstance(b, torch.Tensor):
         b = torch.tensor(b)
-
     if len(a.shape) == 1:
         a = a.unsqueeze(0)
-
     if len(b.shape) == 1:
         b = b.unsqueeze(0)
 
@@ -48,11 +46,8 @@ class TripletLoss(nn.Module):
         self.temperature = temperature
 
     def forward(self, anchor:Tensor, positive:Tensor, negative:Tensor, label=None):
-
         distance_positive = 1 - self.similarity_fct(anchor, positive)
         distance_negative = 1 - self.similarity_fct(anchor, negative)
-        #distance_positive = (anchor - positive).pow(2).sum(1)  # .pow(.5)
-        #distance_negative = (anchor - negative).pow(2).sum(1)  # .pow(.5)
         losses = F.relu(distance_positive - distance_negative + self.margin)
         return losses.mean() 
 
@@ -91,7 +86,6 @@ class OnlineContrastiveLoss(nn.Module):
         self.temperature = temperature
 
     def forward(self, anchor:Tensor, positive:Tensor, negative:Tensor, label=None):
-        
         poss = 1 - self.similarity_fct(anchor, positive)
         negs = 1 - self.similarity_fct(anchor, negative)
 
@@ -149,11 +143,8 @@ class MultipleNegativesRankingLoss(nn.Module):
         self.similarity_fct = similarity_fct
         self.cross_entropy_loss = nn.CrossEntropyLoss()
 
-
     def forward(self, anchor:Tensor, positive:Tensor, negative:Tensor, label:Tensor):
-
         concat_norm = torch.cat([anchor, positive, negative], dim=0)
-
         concat_batch_size = concat_norm.size(0)
         batch_size = anchor.size(0)
 
@@ -166,5 +157,3 @@ class MultipleNegativesRankingLoss(nn.Module):
 
     def get_config_dict(self):
         return {'temperature': self.temperature, 'similarity_fct': self.similarity_fct.__name__}
-        
-

@@ -11,6 +11,7 @@ from torch.utils.data import (
     DataLoader, Dataset
 )
 
+
 class StsDataset(Dataset):
     def __init__(
             self,
@@ -36,6 +37,7 @@ class StsDataset(Dataset):
             'b_attention_mask': torch.tensor(feature.b_attention_mask, dtype=torch.long),
             'labels': torch.tensor(feature.label, dtype=torch.float)
         }
+
     def __len__(self):
         return len(self.features)
     
@@ -43,16 +45,13 @@ class StsDataset(Dataset):
         return DataLoader(self, shuffle=shuffle, batch_size=batch_size, collate_fn=self.collater)
 
     def collater(self, batch: List[Dict[str, Any]]) -> Dict[str, Any]:
-
         a_input_ids = [data['a_input_ids'] for data in batch]
         a_attention_mask = [data['a_attention_mask'] for data in batch]
-
         b_input_ids = [data['b_input_ids'] for data in batch]
         b_attention_mask = [data['b_attention_mask'] for data in batch]
-
         labels = [data['labels'] for data in batch]
 
-        ##  token level encoding
+        # token level encoding
         batch_size = len(batch)
         sizes = [len(s) for s in a_input_ids]
         target_size = min(max(sizes), self.max_length)

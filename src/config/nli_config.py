@@ -15,7 +15,7 @@ def nli_parser_model_args():
         "--valid_file",
         default='/app/data/semantic-search-lib/test',
         type=str,
-        help="The input training data file.",
+        help="The input test data file.",
     )
     parser.add_argument(
         "--experiments_path",
@@ -25,9 +25,10 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--metric",
-        default='spearman',
+        default='val_loss',
+        choices=['spearman', 'pearson', 'train_loss', 'val_loss'],
         type=str,
-        help="The input training data file."
+        help="Evaluation metric"
     )
     parser.add_argument(
         "--train_batch_size",

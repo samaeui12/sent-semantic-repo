@@ -197,7 +197,6 @@ class SimcseTrainer(AbstractTrainer):
                     final_loss = self.cal_loss(batch=batch)
                 if self.args.n_gpu > 1:
                     final_loss = final_loss.mean()
-                    print(f'final_loss: {final_loss}')
                 self.scaler.scale(final_loss).backward()
 
                 # Update the gradient accumulation counter

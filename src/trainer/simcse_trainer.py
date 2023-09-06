@@ -51,6 +51,7 @@ class SimcseTrainer(AbstractTrainer):
         assert (isinstance(metrics, list) or metrics is None), 'Argument metrics is expected to list type'
         if metrics is None:
             return None
+        
         metric_pocket = dict()
         for metric in metrics:
             if 'loss' not in metric:
@@ -190,11 +191,11 @@ class SimcseTrainer(AbstractTrainer):
             
             if self.args.val_data_type =='sts':
                 eval_result = self.validate(val_dataset, epoch=i)
-                is_early_stop = self.early_stop(eval_result, criterias=['spearman', 'val_loss'], epoch=i, key=self.args.metric)
+                is_early_stop = self.early_stop(eval_result, criterias=self.args.metric, epoch=i, key=self.args.early_stop_metric)
             
             elif self.args.val_data_type =='faq':
                 eval_result = self.validate_faq(val_dataset, epoch=i)
-                is_early_stop = self.early_stop(eval_result, criterias=['val_loss'], epoch=i, key=self.args.metric)
+                is_early_stop = self.early_stop(eval_result, criterias=['val_loss'], epoch=i, key=self.args.early_stop_metric)
             
             if is_early_stop:
                 break

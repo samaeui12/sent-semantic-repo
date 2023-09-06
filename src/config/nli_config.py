@@ -42,6 +42,14 @@ def nli_parser_model_args():
     )
 
     parser.add_argument(
+        "--early_stop_metric",
+        default='val_loss',
+        choices=['val_loss', 'spearman'],
+        type=str,
+        help="metric for early stop"
+    )
+    
+    parser.add_argument(
         "--train_batch_size",
         default=512,
         type=int,

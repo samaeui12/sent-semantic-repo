@@ -187,9 +187,15 @@ class SimcseTrainer(AbstractTrainer):
             self.logging.info(f'epoch: {i}, train_loss: {train_loss}')
             if train_loss < self.best_train_loss:
                 self.best_train_loss = train_loss 
-
-            eval_result = self.validate(val_dataset, epoch=i)
-            is_early_stop = self.early_stop(eval_result, criterias=['spearman', 'val_loss'], epoch=i, key=self.args.metric)
+            
+            if self.args.val_data_type =='sts':
+                eval_result = self.validate(val_dataset, epoch=i)
+                is_early_stop = self.early_stop(eval_result, criterias=['spearman', 'val_loss'], epoch=i, key=self.args.metric)
+            
+            elif self.args.val_data_type =='faq':
+                eval_result = self.validate_faq(val_dataset, epoch=i)
+                is_early_stop = self.early_stop(eval_result, criterias=['val_loss'], epoch=i, key=self.args.metric)
+            
             if is_early_stop:
                 break
 
@@ -208,7 +214,7 @@ class SimcseTrainer(AbstractTrainer):
 
                 if self.args.n_gpu > 1:
                     final_loss = final_loss.mean()
-                    
+
                 self.scaler.scale(final_loss).backward()
                 # Update the gradient accumulation counter
                 accumulation_steps += 1
@@ -223,7 +229,6 @@ class SimcseTrainer(AbstractTrainer):
                 final_loss = self.cal_loss(batch=batch)
                 if self.args.n_gpu > 1:
                     final_loss = final_loss.mean()
-                            
                 final_loss.backward()
                 # Update the gradient accumulation counter
                 accumulation_steps += 1
@@ -246,7 +251,38 @@ class SimcseTrainer(AbstractTrainer):
         final_loss = np.mean(train_losses)
 
         return global_step, final_loss
+    
+    def validate_faq(self, val_dataset, epoch) -> Dict[str, float]:
+        val_dataloader = val_dataset.loader(
+            shuffle=False, batch_size=self.args.eval_batch_size
+        )
         
+        self.logging.info("***** Running evaluation [{}] *****".format(epoch))
+        val_losses = []
+        nb_eval_steps = 0
+
+        self.model.eval()
+        with torch.no_grad():
+            for batch in tqdm(val_dataloader, desc="Evaluating", leave=False):
+                batch = {key: (item.to(self.args.device) if type(item) == torch.Tensor else item) for key, item in batch.items()}
+                with torch.no_grad():
+                    val_final_loss = self.cal_loss(batch=batch)
+                    if self.args.n_gpu > 1:
+                        val_final_loss = val_final_loss.mean()
+                    
+                    val_losses.append(val_final_loss.detach().cpu().item())
+
+            nb_eval_steps += 1
+            val_final_loss = np.mean(val_losses)
+
+        results = {
+            'val_loss': val_final_loss,
+            'epoch': epoch
+        }
+
+        return results
+
+
     def validate(self, val_dataset, epoch) -> Dict[str, float]:
         """ evaluate using STS dataset """
         val_dataloader = val_dataset.loader(

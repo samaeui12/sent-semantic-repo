@@ -395,7 +395,7 @@ class Faqprocessor(AbsPreprocessor):
                     if header and i==0:
                         continue
 
-                    row = row.strip().split(',')
+                    row = row.strip().split('\t')
                     if len(row) < 4:
                         continue
                     

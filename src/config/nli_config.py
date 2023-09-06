@@ -28,7 +28,8 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--metric",
-        default='spearman',
+        default='val_loss',
+        choices=['val_loss', 'spearman']
         type=str,
         help="The input training data file."
     )
@@ -41,7 +42,7 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--eval_batch_size",
-        default=64,
+        default=1024,
         type=int,
         help="Batch size for evaluation.",
     )

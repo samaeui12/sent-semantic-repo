@@ -53,6 +53,7 @@ class SimcseTrainer(AbstractTrainer):
             return None
         
         metric_pocket = dict()
+        print(metrics)
         for metric in metrics:
             if 'loss' not in metric:
                 metric_pocket[metric] = -np.inf

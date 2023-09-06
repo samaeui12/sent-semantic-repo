@@ -366,23 +366,24 @@ class Faqprocessor(AbsPreprocessor):
             label_list, size=sample_size, replace=False)
         
         query_text = row[0]
-        query_label = row[1]
+        answer = row[1]
+        query_label = row[2]
         sample_inds = [i for i in random_list if int(i) != int(query_label)]
         
         for sample_ind in sample_inds:
-            result.append([query_text, label2query[int(query_label)], label2query[int(sample_ind)]])
+            result.append([query_text, answer, label2query[int(sample_ind)]])
             
         return result
 
 
     @classmethod
-    def load_data(cls, data_path:str, label_list, label2query, header:bool=False) -> List:
+    def load_data(cls, data_path:str, label_list, label2query, header:bool=True) -> List:
         """  Object: [sentence1 | sentence2 | sentence3] 
              sentence1 <----> sentence2 should be Positive
              sentence1 <----> sentence3 should be Negative
         """     
         dataset = []
-        dataset.append(['sentence_a', 'query_label', 'answer_label'])
+        dataset.append(['query', 'answer' ,'query_label', 'answer_label'])
 
         sentences = dict()       
         if isinstance(data_path, str):      
@@ -394,8 +395,8 @@ class Faqprocessor(AbsPreprocessor):
                     if header and i==0:
                         continue
 
-                    row = row.strip().split('\t')
-                    if len(row) < 3:
+                    row = row.strip().split(',')
+                    if len(row) < 4:
                         continue
                     
                     sampled_data = cls.negative_sampling(row=row, label_list=label_list, sample_size=10, label2query=label2query)

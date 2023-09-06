@@ -1,6 +1,13 @@
 import argparse
 from utils import get_model_argparse
 from model import MODEL_MAPPING_DICT
+import ast
+
+def arg_as_list(s):
+    v = ast.literal_eval(s)
+    if not isinstance(v, list):
+        raise argparse.ArgumentTypeError(f"Argument {s} is not a list")
+    return v)
 
 def nli_parser_model_args():
     parser = argparse.ArgumentParser()
@@ -28,9 +35,9 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--metric",
-        default='val_loss spearman',
+        default=['val_loss'],
         choices=['val_loss', 'spearman'],
-        nargs='+',
+        type=arg_as_list,
         help="metric for evaluation"
     )
 

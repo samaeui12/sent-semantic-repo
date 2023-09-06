@@ -51,7 +51,7 @@ def nli_parser_model_args():
 
     parser.add_argument(
         "--train_batch_size",
-        default=256,
+        default=128,
         type=int,
         help="Batch size for training.",
     )
@@ -64,7 +64,7 @@ def nli_parser_model_args():
     parser.add_argument(
         "--gradient_accumulation_steps",
         type=int,
-        default=4,
+        default=8,
         help="Number of updates steps to accumulate before performing a backward/update pass.",
     )
     parser.add_argument(

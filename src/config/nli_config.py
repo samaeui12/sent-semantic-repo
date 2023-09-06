@@ -82,7 +82,7 @@ def nli_parser_model_args():
     parser.add_argument("--max_grad_norm", default=1.0, type=float, help="Max gradient norm.")
     parser.add_argument(
         "--num_train_epochs",
-        default=10,
+        default=30,
         type=float,
         help="Total number of training epochs to perform.",
     )

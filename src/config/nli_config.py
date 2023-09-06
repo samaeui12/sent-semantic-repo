@@ -56,6 +56,13 @@ def nli_parser_model_args():
         help="Batch size for training.",
     )
     parser.add_argument(
+        "--neg_sample_size",
+        default=50,
+        type=int,
+        help="Batch size for training.",
+    )
+
+    parser.add_argument(
         "--eval_batch_size",
         default=1024,
         type=int,

@@ -28,7 +28,7 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--metric",
-        default='val_loss',
+        default='val_loss spearman',
         choices=['val_loss', 'spearman'],
         nargs='+',
         help="metric for evaluation"

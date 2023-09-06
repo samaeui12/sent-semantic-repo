@@ -17,7 +17,8 @@ from transformers import (
     get_linear_schedule_with_warmup,
     AutoTokenizer,
 )
-from tqdm import tqdm
+#from tqdm import tqdm
+from tqdm.notebook import tqdm
 from model import MODEL_MAPPING_DICT
 from model import CONFIG_MAPPING_DICT
 from trainer.abs_trainer import AbstractTrainer

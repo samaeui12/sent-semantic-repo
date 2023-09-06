@@ -53,12 +53,10 @@ class SimcseTrainer(AbstractTrainer):
             return None
         
         metric_pocket = dict()
-        print(metrics)
         for metric in metrics:
             if 'loss' not in metric:
                 metric_pocket[metric] = -np.inf
             else:
-                print(metric)
                 metric_pocket[metric] = np.inf
 
         return metric_pocket
@@ -151,7 +149,7 @@ class SimcseTrainer(AbstractTrainer):
         )   
         loss_fct = Loss_MAPPING_DICT[self.args.loss]
         self.loss_fct = loss_fct(margin=self.args.margin, temperature=self.args.temperature)
-        self.metrics = self.initialize_metrics(metrics=[self.args.metric])
+        self.metrics = self.initialize_metrics(metrics=self.args.metric)
         
     def cal_loss(self, batch):
 

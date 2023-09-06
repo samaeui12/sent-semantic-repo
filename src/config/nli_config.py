@@ -7,7 +7,7 @@ def arg_as_list(s):
     v = ast.literal_eval(s)
     if not isinstance(v, list):
         raise argparse.ArgumentTypeError(f"Argument {s} is not a list")
-    return v)
+    return v
 
 def nli_parser_model_args():
     parser = argparse.ArgumentParser()

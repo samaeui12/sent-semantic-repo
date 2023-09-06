@@ -28,9 +28,9 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--metric",
-        default='val_loss',
+        default='[val_loss]',
         choices=['val_loss', 'spearman']
-        type=str,
+        type=list,
         help="The input training data file."
     )
 

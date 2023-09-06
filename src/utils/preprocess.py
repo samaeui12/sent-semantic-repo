@@ -360,7 +360,7 @@ class Faqprocessor(AbsPreprocessor):
     """ file open -> tokenizing -> dataclasses"""
 
     @classmethod
-    def negative_sampling(cls, row, label_list:list, label2query:dict, sample_size:int=30):
+    def negative_sampling(cls, row, label_list:list, label2query:dict, sample_size:int):
         result = []
         random_list = random.choice(
             label_list, size=sample_size, replace=False)
@@ -377,7 +377,7 @@ class Faqprocessor(AbsPreprocessor):
 
 
     @classmethod
-    def load_data(cls, data_path:str, label_list, label2query, header:bool=True) -> List:
+    def load_data(cls, data_path:str, label_list, label2query, sample_size:int, header:bool=True) -> List:
         """  Object: [sentence1 | sentence2 | sentence3] 
              sentence1 <----> sentence2 should be Positive
              sentence1 <----> sentence3 should be Negative
@@ -399,19 +399,19 @@ class Faqprocessor(AbsPreprocessor):
                     if len(row) < 4:
                         continue
                     
-                    sampled_data = cls.negative_sampling(row=row, label_list=label_list, sample_size=30, label2query=label2query)
+                    sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=sample_size)
                     dataset.extend(sampled_data)
 
         return dataset
             
     @classmethod
-    def preprocess(cls, data_path, label2query, label_list, tokenizer:PreTrainedTokenizer, tokenizer_input: TokenizerInput=None, header:bool=True) -> None:
+    def preprocess(cls, data_path, label2query, label_list, tokenizer:PreTrainedTokenizer, tokenizer_input: TokenizerInput=None, header:bool=True, sample_size:int=30) -> None:
         """ try read tsv file using pandas first if [memory or parse] error catched use other reading method  """
     
         feature_list = list()
         skipped_line = 0
 
-        datasets = cls.load_data(data_path, header=header, label2query=label2query, label_list=label_list)
+        datasets = cls.load_data(data_path, header=header, label2query=label2query, label_list=label_list, sample_size=sample_size)
         print(f'preprocessing: {len(datasets)}')
         for i, line in tqdm(enumerate(datasets)):
             try:

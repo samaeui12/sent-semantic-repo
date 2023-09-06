@@ -48,10 +48,10 @@ def nli_parser_model_args():
         type=str,
         help="metric for early stop"
     )
-    
+
     parser.add_argument(
         "--train_batch_size",
-        default=512,
+        default=256,
         type=int,
         help="Batch size for training.",
     )

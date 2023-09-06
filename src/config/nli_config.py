@@ -100,7 +100,7 @@ def nli_parser_model_args():
     )
     parser.add_argument(
         "--logging_steps",
-        default=1000,
+        default=225,
         type=int,
         help="Generate log during training at each logging step.",
     )

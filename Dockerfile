@@ -1,6 +1,6 @@
 # Define a builder image
-FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
-
+#FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
+From pytorch/pytorch:2.0.1-cuda11.7-cudnn8-devel
 LABEL name="Hwan"
 LABEL version="1.0"
 LABEL repository="semantic-search-lib"

@@ -395,7 +395,7 @@ class Faqprocessor(AbsPreprocessor):
                         continue
 
                     row = row.strip().split('\t')
-                    if len(row) < 4:
+                    if len(row) < 3:
                         continue
                     
                     sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=sample_size)
@@ -429,7 +429,7 @@ class Faqprocessor(AbsPreprocessor):
                             dataset.append([row[0], row[1], negative_sent])
                     
                     if sample_size > len(negative_intent_list):
-                        sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=sample_size - len(negative_intent_list))
+                        sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=(sample_size - len(negative_intent_list)))
                     
                     dataset += sampled_data
 

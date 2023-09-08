@@ -367,8 +367,8 @@ class Faqprocessor(AbsPreprocessor):
         
         query_text = row[0]
         answer = row[1]
-        query_label = row[2]
-        sample_inds = [i for i in random_list if int(i) != int(query_label)]
+        label = int(row[2])
+        sample_inds = [i for i in random_list if int(i) != label]
         
         for sample_ind in sample_inds:
             result.append([query_text, answer, label2query[int(sample_ind)]])
@@ -385,7 +385,6 @@ class Faqprocessor(AbsPreprocessor):
         dataset = []
         dataset.append(['query', 'answer' ,'query_label', 'answer_label'])
 
-        sentences = dict()       
         if isinstance(data_path, str):      
             data_path = [data_path]
 
@@ -403,15 +402,47 @@ class Faqprocessor(AbsPreprocessor):
                     dataset.extend(sampled_data)
 
         return dataset
+    
+
+    @classmethod
+    def load_data_v2(cls, data_path:str, negative_dict:dict, label_list:list, label2query, sample_size:int, header:bool=True) -> List:
+        """  Object: [sentence1 | intent_nm | intent_idx] -> sent1 | sent2 | sent3 by negative sampling"""     
+        dataset = []
+        dataset.append(['query', 'intent', 'intentidx'])
+
+        if isinstance(data_path, str):      
+            data_path = [data_path]
+
+        for train_file in data_path:
+            with open(train_file, 'r') as file:
+                for i, row in enumerate(file):
+                    if header and i==0:
+                        continue
+
+                    row = row.strip().split('\t')
+                    if len(row) < 3:
+                        continue
+                    
+                    negative_intent_list = negative_dict.get(row[1], [])
+                    if negative_intent_list:
+                        for negative_sent in negative_intent_list:
+                            dataset.append([row[0], row[1], negative_sent])
+                    
+                    if sample_size > len(negative_intent_list):
+                        sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=sample_size - len(negative_intent_list))
+                    
+                    dataset += sampled_data
+
+        return dataset
             
     @classmethod
-    def preprocess(cls, data_path, label2query, label_list, tokenizer:PreTrainedTokenizer, tokenizer_input: TokenizerInput=None, header:bool=True, sample_size:int=30) -> None:
+    def preprocess(cls, data_path, label2query, label_list, tokenizer:PreTrainedTokenizer, tokenizer_input: TokenizerInput=None, header:bool=True, sample_size:int=30, negative_dict:dict=None) -> None:
         """ try read tsv file using pandas first if [memory or parse] error catched use other reading method  """
     
         feature_list = list()
         skipped_line = 0
 
-        datasets = cls.load_data(data_path, header=header, label2query=label2query, label_list=label_list, sample_size=sample_size)
+        datasets = cls.load_data_v2(data_path, header=header, label2query=label2query, label_list=label_list, sample_size=sample_size, negative_dict=negative_dict)
         print(f'preprocessing: {len(datasets)}')
         for i, line in tqdm(enumerate(datasets)):
             try:

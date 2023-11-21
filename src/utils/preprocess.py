@@ -377,7 +377,7 @@ class Faqprocessor(AbsPreprocessor):
 
 
     @classmethod
-    def load_data(cls, data_path:str, label_list, label2query, sample_size:int, header:bool=True) -> List:
+    def load_data(cls, data_path:str, label_list, label2query, sample_size:int, header:bool=True, is_negativeSample:bool=False) -> List:
         """  Object: [sentence1 | sentence2 | sentence3] 
              sentence1 <----> sentence2 should be Positive
              sentence1 <----> sentence3 should be Negative
@@ -397,9 +397,12 @@ class Faqprocessor(AbsPreprocessor):
                     row = row.strip().split('\t')
                     if len(row) < 3:
                         continue
-                    
-                    sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=sample_size)
-                    dataset.extend(sampled_data)
+
+                    if is_negativeSample:
+                        sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=sample_size)
+                        dataset.extend(sampled_data)
+                    else:
+                        
 
         return dataset
     

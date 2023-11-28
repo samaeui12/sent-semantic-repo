@@ -13,7 +13,7 @@ import pandas as pd
 import csv
 from common import YamlParser
 from io import StringIO
-from input import NLIInput, TokenizerInput, StsInput
+from input import NLIInput, TokenizerInput, StsInput, SingleSentenceInput
 import dataclasses
 from itertools import product
 from numpy import random

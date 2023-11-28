@@ -523,7 +523,7 @@ class PreprocessorFactory:
             return Tripleprocessor
         elif data_type.lower() == 'faq':
             return Faqprocessor
-        elif data_type.lower() == 'test'
+        elif data_type.lower() == 'test':
             return SingleSentenceProcessor
         else:
             raise ValueError(f"Invalid model type: {data_type}")

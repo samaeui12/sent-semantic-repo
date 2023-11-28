@@ -21,7 +21,7 @@ class InferenceDataset(Dataset):
             tokenizer,
             **kwargs
     ):
-        super(EmbeddingDataset, self).__init__()
+        super(InferenceDataset, self).__init__()
         self.args = args
         self.features = features
         self.max_length = max_length

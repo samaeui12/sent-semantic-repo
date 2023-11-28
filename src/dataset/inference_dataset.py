@@ -10,7 +10,7 @@ import torch
 from torch.utils.data import (
     DataLoader, Dataset
 )
-from src.input import InferenceDataset
+from src.input import SingleSentenceInput
 
 class InferenceDataset(Dataset):
     def __init__(

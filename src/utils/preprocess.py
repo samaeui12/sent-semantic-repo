@@ -402,6 +402,7 @@ class Faqprocessor(AbsPreprocessor):
                         sampled_data = cls.negative_sampling(row=row, label_list=label_list, label2query=label2query, sample_size=sample_size)
                         dataset.extend(sampled_data)
                     else:
+                        pass
                         
 
         return dataset
@@ -484,6 +485,33 @@ class Faqprocessor(AbsPreprocessor):
 
         return feature_list
 
+class SingleSentenceProcessor(AbsPreprocessor):
+
+    @classmethod
+    def preprocess(cls, tokenizer,  input_list:List) -> None:
+        """ try read tsv file using pandas first if [memory or parse] error catched use other reading method  """
+    
+        feature_list = list()
+        skipped_line = 0
+
+        for i, line in enumerate(input_list):
+            try:
+                a_encoded_sentence = cls.tokenizing(input=line, tokenizer=tokenizer, tokenizer_input=None)
+                feature_list.append(
+                    SingleSentenceInput(
+                        sentence_a = line,
+                        a_input_ids = a_encoded_sentence.input_ids,
+                        a_attention_mask=a_encoded_sentence.attention_mask,
+                    )
+                )
+            except Exception as e:
+                print(f'Error occurs in {i} lines in preprocessing')
+                print(line)
+                print(e)
+                break
+
+        return feature_list
+
 
 class PreprocessorFactory:
     def __new__(cls, data_type: str) -> AbsPreprocessor:
@@ -495,54 +523,9 @@ class PreprocessorFactory:
             return Tripleprocessor
         elif data_type.lower() == 'faq':
             return Faqprocessor
+        elif data_type.lower() == 'test'
+            return SingleSentenceProcessor
         else:
             raise ValueError(f"Invalid model type: {data_type}")
 
 
-if __name__ == '__main__':
-
-    # yaml_file = '/app/code/config/config.yml'
-    # parser = YamlParser(yaml_file)
-    # config_dict = parser.parse_recursive()
-
-    # Kornli_path = config_dict['data']['kornli']['path']
-    # Korsts_path = config_dict['data']['korsts']['path']
-
-    # xnli_dev = os.path.join(Kornli_path, 'xnli.dev.ko.tsv')
-    # mnli_train = os.path.join(Kornli_path, 'multinli.train.ko.tsv')
-    # snli_train = os.path.join(Kornli_path, 'snli_1.0_train.ko.tsv')
-
-    # data_path = [mnli_train, snli_train]
-    # preprocessor = PreprocessorFactory(model_type='simcse')
-
-    # is_preprocessed = False
-    # save_path = '/app/data/open_data/preprocess/KorNLI/kornli.tsv'
-    # dataset = preprocessor.preprocess(data_path=data_path, save_path=save_path)
-    # print(dataset[0])
-
-    from transformers import (
-        AdamW,
-        AutoModel,
-        get_linear_schedule_with_warmup,
-        AutoTokenizer,
-    )
-    from model import MODEL_MAPPING_DICT
-    
-    model_type = 'klue/bert-base'
-    """ initialize seed """
-    tokenizer = AutoTokenizer.from_pretrained(model_type)
-    # data = preprocessor.build(data_path=data_path, save_path=save_path, tokenizer=tokenizer)
-    # print(data[:3])
-
-    preprocessor = PreprocessorFactory(model_type='diffcse')
-    print(preprocessor)
-    #Korsts_path = '/app/data/open_data/KorSTS'
-    #data_path = [os.path.join(Korsts_path, 'sts-dev.tsv'),  os.path.join(Korsts_path, 'sts-test.tsv'), os.path.join(Korsts_path, 'sts-train.tsv')]
-    #save_path = '/app/data/open_data/preprocess/KorSTS/korsts.tsv'
-    data_path = None
-    save_path = '/app/data/open_data/preprocess/merged/merge.tsv'
-    print(data_path)
-    dataset = preprocessor.preprocess(data_path=data_path, save_path=save_path)
-    print(dataset[0])
-    #data = preprocessor.build(data_path=data_path, save_path=save_path, tokenizer=tokenizer)
-    #print(data[:3])

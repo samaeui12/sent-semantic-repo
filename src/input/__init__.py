@@ -1,1 +1,1 @@
-from .input import NLIInput, StsInput, TokenizerInput
+from .input import NLIInput, StsInput, TokenizerInput, SingleSentenceInput

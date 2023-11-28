@@ -36,3 +36,10 @@ class StsInput:
     b_input_ids: List[int] = None
     b_attention_mask: List[int] = None
     label: float = None
+
+@dataclass
+class SingleSentenceInput:
+    sentence_a: str = None
+    a_input_ids: List[int] = None
+    a_attention_mask: List[int] = None
+

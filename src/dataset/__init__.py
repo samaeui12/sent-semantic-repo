@@ -1,9 +1,11 @@
-from src.dataset.simcse_dataset import Unsup_simcse, Sup_simcse
-from src.dataset.sts_dataset import StsDataset
+from .simcse_dataset import Unsup_simcse, Sup_simcse
+from .sts_dataset import StsDataset
+from .inference_dataset import InferenceDataset
 
  
 DATASET_MAPPING_DICT = {
     'Sup_simcse': Sup_simcse,
     'Unsup_simcse': Unsup_simcse,
-    'StsDataset': StsDataset
+    'StsDataset': StsDataset,
+    'InferenceDataset: InferenceDataset 
 }

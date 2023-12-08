@@ -24,6 +24,8 @@ from model import CONFIG_MAPPING_DICT
 from trainer.abs_trainer import AbstractTrainer
 from scipy.stats import pearsonr, spearmanr
 from utils import SummaryWriter, print_grad
+import torch.nn.functional as F
+
 
 
 class SimcseTrainer(AbstractTrainer):
@@ -149,6 +151,7 @@ class SimcseTrainer(AbstractTrainer):
             self.optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps= total_step
         )   
         loss_fct = Loss_MAPPING_DICT[self.args.loss]
+        print(f'loss: {self.args.loss}')
         self.loss_fct = loss_fct(margin=self.args.margin, temperature=self.args.temperature)
         self.metrics = self.initialize_metrics(metrics=self.args.metric)
         
@@ -158,10 +161,11 @@ class SimcseTrainer(AbstractTrainer):
         a_embedding = self.model(batch['a_input_ids'], batch['a_attention_mask'])
         b_embedding = self.model(batch['b_input_ids'], batch['b_attention_mask'])
         c_embedding = self.model(batch['c_input_ids'], batch['c_attention_mask'])
-
-        a_norm = a_embedding / a_embedding.norm(dim=1)[:, None]
-        b_norm = b_embedding / b_embedding.norm(dim=1)[:, None]
-        c_norm = c_embedding / c_embedding.norm(dim=1)[:, None]
+        
+        a_norm = F.normalize(a_embedding, p=2, dim=1)
+        b_norm = F.normalize(b_embedding, p=2, dim=1)
+        c_norm = F.normalize(c_embedding, p=2, dim=1)
+        
         final_loss = self.loss_fct(a_norm, b_norm, c_norm, label=batch['labels'])
         
         return final_loss

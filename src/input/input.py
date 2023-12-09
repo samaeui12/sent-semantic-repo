@@ -24,6 +24,7 @@ class NLIInput:
     b_attention_mask: List[int] = None
     c_input_ids: List[int] = None
     c_attention_mask: List[int] = None
+    label: Union[str, int] = None
 
 
 @dataclass

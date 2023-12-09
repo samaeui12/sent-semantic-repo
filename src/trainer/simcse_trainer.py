@@ -24,7 +24,10 @@ from model import CONFIG_MAPPING_DICT
 from trainer.abs_trainer import AbstractTrainer
 from scipy.stats import pearsonr, spearmanr
 from utils import SummaryWriter, print_grad
+
 import torch.nn.functional as F
+from torch.utils.data import DataLoader, Dataset
+
 
 
 
@@ -99,6 +102,7 @@ class SimcseTrainer(AbstractTrainer):
             ) 
             model_to_save.save_pretrained(model_save_path)
             self.tokenizer.save_pretrained(model_save_path)
+            print(f'best valid metic: {now_metric}')
             #state_dict = self._create_state_dict(epoch=epoch)
 
             self.logging.info("save model to [{}]".format(model_save_path))
@@ -107,7 +111,7 @@ class SimcseTrainer(AbstractTrainer):
             
         return is_early_stop
                     
-    def model_setting(self, model_type:str, train_dataset:Dataset, model=None, tokenizer=None):
+    def model_setting(self, model_type:str, train_dataset:Dataset, model=None, tokenizer=None, sampler=None, batch_sampler=None):
         if model is None and tokenizer is None:
             self.model = MODEL_MAPPING_DICT[model_type].from_pretrained(
                 self.args.pretrained_model, **vars(self.args), 
@@ -139,9 +143,15 @@ class SimcseTrainer(AbstractTrainer):
         ]
 
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=self.args.learning_rate, eps=self.args.adam_epsilon)
-        self.train_dataloader = train_dataset.loader(
-            shuffle=True, batch_size=self.args.train_batch_size
-        )
+        if (sampler is not None) and (batch_sampler is not None):
+            self.train_dataloader = train_dataset.loader(
+                shuffle=True, batch_size=self.args.train_batch_size, sampler=sampler, batch_sampler=batch_sampler
+            )
+        else:
+            self.train_dataloader = train_dataset.loader(batch_sampler = batch_sampler)
+            
+        self.epoch_steps = len(self.train_dataloader) * 2
+        
         total_step = len(self.train_dataloader) // self.args.gradient_accumulation_steps * self.args.num_train_epochs
         self.args.warmup_steps = int(self.args.warmup_percent * total_step)
         
@@ -153,9 +163,13 @@ class SimcseTrainer(AbstractTrainer):
         loss_fct = Loss_MAPPING_DICT[self.args.loss]
         print(f'loss: {self.args.loss}')
         self.loss_fct = loss_fct(margin=self.args.margin, temperature=self.args.temperature)
+        
+        val_loss_fct = Loss_MAPPING_DICT[self.args.val_loss_nm]
+        
+        self.val_loss_fct = val_loss_fct(margin=self.args.margin, temperature=self.args.temperature)
         self.metrics = self.initialize_metrics(metrics=self.args.metric)
         
-    def cal_loss(self, batch):
+    def cal_loss(self, batch, mode='train'):
 
         batch = {key: (item.to(self.args.device) if type(item) == torch.Tensor else item) for key, item in batch.items()}
         a_embedding = self.model(batch['a_input_ids'], batch['a_attention_mask'])
@@ -165,14 +179,17 @@ class SimcseTrainer(AbstractTrainer):
         a_norm = F.normalize(a_embedding, p=2, dim=1)
         b_norm = F.normalize(b_embedding, p=2, dim=1)
         c_norm = F.normalize(c_embedding, p=2, dim=1)
-        
-        final_loss = self.loss_fct(a_norm, b_norm, c_norm, label=batch['labels'])
+        if mode == 'train':
+            final_loss = self.loss_fct(a_norm, b_norm, c_norm, label=batch['labels'])
+        else:
+            final_loss = self.val_loss_fct(a_norm, b_norm, c_norm, label=batch['labels'])
         
         return final_loss
 
-    def train(self, model_type, train_dataset, val_dataset, model=None, tokenizer=None) -> Dict[str, float]:
+    def train(self, model_type, train_dataset, val_dataset, model=None, tokenizer=None, is_modelSetting=False) -> Dict[str, float]:
         global_step = 0
-        self.model_setting(model_type=model_type, train_dataset=train_dataset, model=model, tokenizer=tokenizer)
+        if is_modelSetting:
+            self.model_setting(model_type=model_type, train_dataset=train_dataset, model=model, tokenizer=tokenizer)
 
         """ print requires grad in model for debuging """
         self.requires_grad_list = []
@@ -192,13 +209,14 @@ class SimcseTrainer(AbstractTrainer):
             self.logging.info(f'epoch: {i}, train_loss: {train_loss}')
             if train_loss < self.best_train_loss:
                 self.best_train_loss = train_loss 
+                print(f'best_train_loss: {train_loss}, epoch: {i}')
             
             if self.args.val_data_type =='sts':
                 eval_result = self.validate(val_dataset, epoch=i)
                 is_early_stop = self.early_stop(eval_result, criterias=self.args.metric, epoch=i, key=self.args.early_stop_metric)
             
             elif self.args.val_data_type =='faq':
-                eval_result = self.validate_faq(val_dataset, epoch=i)
+                eval_result, _ = self.validate_faq(val_dataset, epoch=i)
                 is_early_stop = self.early_stop(eval_result, criterias=['val_loss'], epoch=i, key=self.args.early_stop_metric)
             
             if is_early_stop:
@@ -253,6 +271,9 @@ class SimcseTrainer(AbstractTrainer):
                 logging_str += " {} [{:.4}]".format('loss', final_loss.detach().cpu().item())
                 self.logging.info(logging_str)
             
+            if batch_idx >= self.epoch_steps:
+                break
+            
         final_loss = np.mean(train_losses)
 
         return global_step, final_loss
@@ -271,7 +292,7 @@ class SimcseTrainer(AbstractTrainer):
             for batch in tqdm(val_dataloader, desc="Evaluating", leave=False):
                 batch = {key: (item.to(self.args.device) if type(item) == torch.Tensor else item) for key, item in batch.items()}
                 with torch.no_grad():
-                    val_final_loss = self.cal_loss(batch=batch)
+                    val_final_loss = self.cal_loss(batch=batch, mode='val')
                     if self.args.n_gpu > 1:
                         val_final_loss = val_final_loss.mean()
                     
@@ -285,7 +306,7 @@ class SimcseTrainer(AbstractTrainer):
             'epoch': epoch
         }
 
-        return results
+        return results, val_losses
 
 
     def validate(self, val_dataset, epoch) -> Dict[str, float]:

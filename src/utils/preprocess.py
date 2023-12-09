@@ -201,8 +201,16 @@ class Stsprocessor(AbsPreprocessor):
 
 class Tripleprocessor(AbsPreprocessor):
     """ file open -> tokenizing -> dataclasses"""
-    @staticmethod
-    def load_data(data_path:str, save_path:str=None, header:bool=True) -> List:
+    __idx2positive__ = set()
+    __positive2idx__ = dict()
+    
+    @classmethod
+    def reset_class_var(cls):
+        cls.__idx2positive__ = set()
+        cls.__positive2idx__ = dict()
+        
+    @classmethod
+    def load_data(cls, data_path:str, save_path:str=None, header:bool=True) -> List:
         """  Object: [sentence1 | sentence2 | sentence3] 
              sentence1 <----> sentence2 should be Positive
              sentence1 <----> sentence3 should be Negative
@@ -228,6 +236,7 @@ class Tripleprocessor(AbsPreprocessor):
                     sentence_b = line[1]
                     sentence_c = line[2]
                     dataset.append([sentence_a, sentence_b, sentence_c])
+                    cls.__idx2positive__.add(sentence_b)
              
         if save_path is not None:
             if os.path.exists(save_path):
@@ -248,6 +257,9 @@ class Tripleprocessor(AbsPreprocessor):
         skipped_line = 0
 
         datasets = cls.load_data(data_path, save_path=save_path, header=header)
+        cls.__idx2positive__ = list(cls.__idx2positive__)
+        cls.__positive2idx__ = {pos:i for i, pos in enumerate(cls.__idx2positive__)}
+        
         for i, line in enumerate(datasets):
             try:
                 if (len(line) < 3) or (i==0):
@@ -258,6 +270,8 @@ class Tripleprocessor(AbsPreprocessor):
                 a_sentence = line[0]
                 b_sentence = line[1]
                 c_sentence = line[2]
+                label = cls.__positive2idx__[b_sentence]
+                
                 a_encoded_sentence = cls.tokenizing(input=a_sentence, tokenizer=tokenizer, tokenizer_input=tokenizer_input)
                 b_encoded_sentence = cls.tokenizing(input=b_sentence, tokenizer=tokenizer, tokenizer_input=tokenizer_input)
                 c_encoded_sentence = cls.tokenizing(input=c_sentence, tokenizer=tokenizer, tokenizer_input=tokenizer_input)
@@ -275,7 +289,9 @@ class Tripleprocessor(AbsPreprocessor):
                         b_attention_mask=b_encoded_sentence.attention_mask,
 
                         c_input_ids = c_encoded_sentence.input_ids,
-                        c_attention_mask=c_encoded_sentence.attention_mask
+                        c_attention_mask=c_encoded_sentence.attention_mask,
+                        
+                        label = label
                     )
                 )
             except Exception as e:

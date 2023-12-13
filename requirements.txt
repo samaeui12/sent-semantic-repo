@@ -1,0 +1,16 @@
+transformers>=4.14.1
+protobuf==3.20.1
+scipy
+datasets
+pandas
+scikit-learn
+prettytable
+gradio
+setuptools
+numpy
+nltk
+tqdm
+PyYAML>=3.09
+packaging
+jupyterlab
+matplotlib

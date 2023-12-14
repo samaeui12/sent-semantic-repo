@@ -143,14 +143,16 @@ class SimcseTrainer(AbstractTrainer):
         ]
 
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=self.args.learning_rate, eps=self.args.adam_epsilon)
-        if (sampler is not None) and (batch_sampler is not None):
+        if batch_sampler is None:
+            print('no sampler')
             self.train_dataloader = train_dataset.loader(
-                shuffle=True, batch_size=self.args.train_batch_size, sampler=sampler, batch_sampler=batch_sampler
-            )
-        else:
-            self.train_dataloader = train_dataset.loader(batch_sampler = batch_sampler)
+                shuffle=True, batch_size=self.args.train_batch_size)
+            self.epoch_steps = len(self.train_dataloader)
             
-        self.epoch_steps = len(self.train_dataloader) * 2
+        else:
+            print('use sampler')
+            self.train_dataloader = train_dataset.loader(batch_sampler = batch_sampler)
+            self.epoch_steps = len(self.train_dataloader) * 2
         
         total_step = len(self.train_dataloader) // self.args.gradient_accumulation_steps * self.args.num_train_epochs
         self.args.warmup_steps = int(self.args.warmup_percent * total_step)

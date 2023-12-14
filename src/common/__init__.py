@@ -1,1 +1,1 @@
-from src.common.parser import YamlParser
+from .parser import YamlParser

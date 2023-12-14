@@ -6,11 +6,9 @@ pandas
 scikit-learn
 prettytable
 gradio
-setuptools
 numpy
 nltk
 tqdm
 PyYAML>=3.09
 packaging
-jupyterlab
-matplotlib
+rank_bm25

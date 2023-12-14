@@ -29,19 +29,28 @@ class Unsup_simcse(Dataset):
 
     def __getitem__(self, index) -> Dict[str, Any]:
         feature = self.features[index]
+        try:
+            label =  feature.label
+        except:
+            label = -1
         return {
             'a_input_ids': torch.tensor(feature.a_input_ids, dtype=torch.long),
             'a_attention_mask': torch.tensor(feature.a_attention_mask, dtype=torch.long),
             'b_input_ids': torch.tensor(feature.b_input_ids, dtype=torch.long),
             'b_attention_mask': torch.tensor(feature.b_attention_mask, dtype=torch.long),
             'c_input_ids': torch.tensor(feature.c_input_ids, dtype=torch.long),
-            'c_attention_mask': torch.tensor(feature.c_attention_mask, dtype=torch.long)
+            'c_attention_mask': torch.tensor(feature.c_attention_mask, dtype=torch.long),
+            'label': label
         }
+    
     def __len__(self):
         return len(self.features)
     
-    def loader(self, shuffle:bool=True, batch_size:int=64):
-        return DataLoader(self, shuffle=shuffle, batch_size=batch_size, collate_fn=self.collater)
+    def loader(self, shuffle:bool=True, batch_size:int=64, batch_sampler=None):
+        if batch_sampler is None:
+            return DataLoader(self, shuffle=shuffle, batch_size=batch_size, collate_fn=self.collater)
+        else:
+            return DataLoader(self, batch_sampler=batch_sampler, collate_fn=self.collater)
 
     def collater(self, batch: List[Dict[str, Any]]) -> Dict[str, Any]:
 
